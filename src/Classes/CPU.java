@@ -4,7 +4,7 @@
  */
 package Classes;
 
-import DataEstructures.List;
+import DataStructures.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

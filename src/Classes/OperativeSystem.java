@@ -4,7 +4,7 @@
  */
 package Classes;
 
-import DataEstructures.Queue;
+import DataStructures.Queue;
 
 /**
  *
