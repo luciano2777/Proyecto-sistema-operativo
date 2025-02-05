@@ -2,19 +2,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package javaapplication15;
+package Classes;
+
 
 /**
  *
- * @author luciano
+ * @author Juan
  */
-public class JavaApplication15 {
+public class Main {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        Simulator sim = new Simulator(2);
+        
+        sim.startSimulation();
+        
     }
     
 }
