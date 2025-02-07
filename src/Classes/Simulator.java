@@ -28,7 +28,7 @@ public class Simulator {
             this.mainMemory = new List(new OperativeSystem());  
             
             for (int i = 0; i < 3; i++) {
-                CPU newCPU = new CPU(this.mainMemory);
+                CPU newCPU = new CPU(i, this.mainMemory);
                 if(i < numCPUenable){
                     newCPU.setEnabled(true);
                 }

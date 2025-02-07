@@ -18,6 +18,7 @@ public class Main {
         Simulator sim = new Simulator(2);
         
         sim.startSimulation();
+
         
     }
     
