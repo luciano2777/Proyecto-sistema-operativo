@@ -18,6 +18,7 @@ public class Process extends MemoryEntity{
     private String name;
     private int PC;
     private int MAR;
+    private int NumInstructions;
     
     //Constantes
     private static final int RUNNING = 0;
@@ -36,6 +37,8 @@ public class Process extends MemoryEntity{
         this.name = name;
         this.PC = 0;
         this.MAR = 0;
+        this.NumInstructions = 0;
+        
         processCount++;
     }
     
@@ -47,12 +50,13 @@ public class Process extends MemoryEntity{
      * @param PC
      * @param MAR 
      */
-    public Process(String name, int PC, int MAR) {
+    public Process(String name, int PC, int MAR, int NumInstructions) {
         this.ID = processCount;
         this.status = READY;
         this.name = name;
         this.PC = PC;
         this.MAR = MAR;
+        this.NumInstructions = NumInstructions;
         processCount++;
     }
 
@@ -91,6 +95,14 @@ public class Process extends MemoryEntity{
 
     public void setMAR(int MAR) {
         this.MAR = MAR;
+    }
+    
+    public int getInstructions() {
+        return NumInstructions;
+    }
+
+    public void setInstructions(int MAR) {
+        this.MAR = NumInstructions;
     }
     
     //-------------------Procedimientos y Metodos-----------------------

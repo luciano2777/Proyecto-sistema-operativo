@@ -10,6 +10,7 @@ package Classes;
  */
 public class ProcessIObound extends Process{
     //Atributos
+    private int NumInstructions;
     private int ciclesForException;
     private int ciclesForSuccess;
        
@@ -36,11 +37,12 @@ public class ProcessIObound extends Process{
      * @param name
      * @param PC
      * @param MAR
+     * @param NumInstructions
      * @param ciclesForException
      * @param ciclesForSuccess 
      */
-    public ProcessIObound(String name, int PC, int MAR, int ciclesForException, int ciclesForSuccess) {
-        super(name, PC, MAR);
+    public ProcessIObound(String name, int PC, int MAR, int NumInstructions, int ciclesForException, int ciclesForSuccess) {
+        super(name, PC, MAR,NumInstructions);
         this.ciclesForException = ciclesForException;
         this.ciclesForSuccess = ciclesForSuccess;
     }

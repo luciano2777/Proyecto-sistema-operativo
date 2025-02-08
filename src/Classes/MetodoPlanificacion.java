@@ -46,7 +46,7 @@ public class MetodoPlanificacion extends MemoryEntity {
             Process current = ListSRT.get(j);
             Process next = ListSRT.get(j + 1);
             
-            if (current.getPC() > next.getPC()) { //CAMBIAR LO DE GET PC al periodo mas corto recorrido
+            if (current.getInstructions() > next.getInstructions()) { //CAMBIAR LO DE GET PC al Tiempo de ejecucion
                 // Cambia elemntos
                 ListSRT.pop( j);
                 ListSRT.insert(next, j);
@@ -73,11 +73,12 @@ public class MetodoPlanificacion extends MemoryEntity {
     //PRUEBA
      public static void main(String[] args) {
         MetodoPlanificacion mem = new MetodoPlanificacion();
-        Process a = new Process("A",5,1);
-        Process b = new Process("B",3,2);
-        Process c = new Process("C",2,3);
-        Process d = new Process("D",6,3);
-        Process f = new Process("E",9,10);
+        Process a = new Process("A",5,1,1);
+        Process b = new Process("B",3,2,2);
+        Process c = new Process("C",2,3,3);
+        Process d = new Process("D",6,3,5);
+        Process f = new Process("E",9,10,4);
+        
         mem.AddSRT(a);
         mem.AddSRT(b);
         mem.AddSRT(c);

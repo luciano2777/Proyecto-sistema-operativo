@@ -9,6 +9,8 @@ package Classes;
  * @author Juan
  */
 public class ProcessCPUbound extends Process {
+    //Agregar numero de instrucciones
+   
     
     /**
      * Constructor 1
@@ -28,8 +30,8 @@ public class ProcessCPUbound extends Process {
      * @param PC
      * @param MAR 
      */
-    public ProcessCPUbound(String name, int PC, int MAR) {
-        super(name, PC, MAR);
+    public ProcessCPUbound(String name, int PC, int MAR, int NumInstructions) {
+        super(name, PC, MAR, NumInstructions);
     }
 
 
