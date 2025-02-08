@@ -38,31 +38,42 @@ public class MetodoPlanificacion extends MemoryEntity {
         
         
     }
-    public void ExecuteSRT(){ //Usa un algoritmo para reordenar la lista del proceso mas pequeño al mas mayor.
+ public void ExecuteSRT() {
     int size = ListSRT.getSize();
+    List<Process> tempList = new List<>();  // Crear una lista temporal
     
-    for (int i = 0; i < size - 1; i++) { //Recorrer la lista
-        for (int j = 0; j < size - i - 1; j++) {
-            Process current = ListSRT.get(j);
-            Process next = ListSRT.get(j + 1);
-            
-            if (current.getInstructions() > next.getInstructions()) { //CAMBIAR LO DE GET PC al Tiempo de ejecucion
-                // Cambia elemntos
-                ListSRT.pop( j);
-                ListSRT.insert(next, j);
-                ListSRT.pop( j+1);
-                ListSRT.insert(current, j + 1);
-                System.out.println("Swapping: " + current.getPC() + " > " + next.getPC());
+    // Copiar todos los elementos al tempList
+    for (int i = 0; i < size; i++) {
+        tempList.append(ListSRT.get(i));
+    }
+    
+    // Limpiar la lista original
+    ListSRT.delete();
+    
+    // Ordenar mientras se inserta devuelva a ListaSRT
+    while (tempList.getSize() > 0) {
+        int minIndex = 0;
+        Process minProcess = tempList.get(0);
+        
+        // Encontrar minimos
+        for (int i = 0; i < tempList.getSize(); i++) {
+            Process current = tempList.get(i);
+            if (current.getInstructions() < minProcess.getInstructions()) {
+                minProcess = current;
+                minIndex = i;
             }
         }
+        
+        // Remover de tempList y añadir to ListSRT
+        tempList.pop(minIndex);
+        ListSRT.append(minProcess);
     }
 
-    // Imprimir elementos
-//    System.out.println("\nProcesos ordenados:");
-//    for (int i = 0; i < ListSRT.getSize(); i++) {
-//        Process p = ListSRT.get(i);
-//        System.out.println(p.getName() + " (PC: " + p.getPC() + ")");
-//    }
+    System.out.println("\nProcesos ordenados:"); //Cambiar imprimir procesos ordenados a ejecutar procesos
+    for (int i = 0; i < ListSRT.getSize(); i++) {
+        Process p = ListSRT.get(i);
+        System.out.println(p.getName() + " (Instructions: " + p.getInstructions() + ")");
+    }
 }
 
 
@@ -77,13 +88,15 @@ public class MetodoPlanificacion extends MemoryEntity {
         Process b = new Process("B",3,2,2);
         Process c = new Process("C",2,3,3);
         Process d = new Process("D",6,3,5);
-        Process f = new Process("E",9,10,4);
+        Process E = new Process("E",9,10,4);
+        Process F = new Process("F",10,12,9);
         
         mem.AddSRT(a);
         mem.AddSRT(b);
         mem.AddSRT(c);
         mem.AddSRT(d);
-        mem.AddSRT(f);
+        mem.AddSRT(E);
+        
         mem.ExecuteSRT();
         
         
