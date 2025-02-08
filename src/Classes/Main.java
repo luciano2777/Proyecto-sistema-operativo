@@ -4,6 +4,8 @@
  */
 package Classes;
 
+import Interfaz.ejemplo;
+
 
 /**
  *
@@ -15,9 +17,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Simulator sim = new Simulator(2);
-        
-        sim.startSimulation();
+       ejemplo e = new ejemplo();
+       
 
         
     }
