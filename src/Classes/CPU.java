@@ -13,30 +13,31 @@ import java.util.logging.Logger;
  * La clase CPU sera un hilo
  * @author Juan
  */
-public class CPU extends Thread{
+public class CPU extends Thread implements ClockListener{
     //Atributos
     private int ID;
     private int PC;
     private int MAR;
     private boolean enabled;  
     private List<MemoryEntity> mainMemory;
-    private Semaphore semaphore;
     private Clock clock;
+    private Semaphore semaphore;
        
     
     /***
      * Constructor 1: Crea un CPU con los valores de PC y MAR en 0
      * @param ID
      * @param mainMemory
+     * @param clock
      */
-    public CPU(int ID, List<MemoryEntity> mainMemory) {
+    public CPU(int ID, List<MemoryEntity> mainMemory, Clock clock) {
         this.ID = ID;
         this.PC = 0;
         this.MAR = 0;
         this.enabled = false;
         this.mainMemory = mainMemory;
+        this.clock = clock;
         this.semaphore = new Semaphore(1);
-        this.clock = new Clock(500);
     }
     
     /***
@@ -46,12 +47,14 @@ public class CPU extends Thread{
      * @param PC
      * @param MAR
      */
-    public CPU(int ID, List<MemoryEntity> mainMemory, int PC, int MAR) {
+    public CPU(int ID, List<MemoryEntity> mainMemory, int PC, int MAR, Clock clock) {
         this.ID = ID;
         this.PC = PC;
         this.MAR = MAR;
         this.enabled = false;
         this.mainMemory = mainMemory;
+        this.clock = clock;
+        this.semaphore = new Semaphore(1);
     }
     
     //-------------------Getters y Setters------------------
@@ -83,26 +86,34 @@ public class CPU extends Thread{
         return mainMemory;
     }
 
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public Clock getClock() {
+        return clock;
+    }
+
+    public void setClock(Clock clock) {
+        this.clock = clock;
+    }  
     
-    
-    
-    
-    //----------------Procedimientos y Metodos----------------
-    
+    //----------------Metodos de ClockListeners---------------
     @Override
-    public void run(){
-        boolean run = true;
-        while(run){
-            try {
-                this.semaphore.acquire();
-                System.out.println("Procesador " + this.ID + " ejecutando en tick " + this.clock.getTick());   
-                this.clock.tick();
-                this.semaphore.release();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(CPU.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    public void onTick(int tick){
+        if(this.enabled){
+            System.out.println("Procesador " + this.ID + " en tick " + tick + "| RelojStatus: " + clock.getStatus());            
         }
     }
+    
+    
+    
+    
+    
     
     
 }
