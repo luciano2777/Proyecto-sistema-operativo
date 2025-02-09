@@ -21,9 +21,6 @@ public class CreateProcessView extends javax.swing.JPanel {
         buttonGroup.add(cpuBoundRButton);
         buttonGroup.add(IOBoundRButton);
         cpuBoundRButton.setSelected(true);
-        
-        IORequestSpinner.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
-        IOSatisfySpinner.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
     }
 
     /**
@@ -42,11 +39,19 @@ public class CreateProcessView extends javax.swing.JPanel {
         numInstructionsInput = new javax.swing.JTextField();
         cpuBoundRButton = new javax.swing.JRadioButton();
         IOBoundRButton = new javax.swing.JRadioButton();
-        IORequestSpinner = new javax.swing.JSpinner();
         IOSatisfyLabel = new javax.swing.JLabel();
-        IOSatisfySpinner = new javax.swing.JSpinner();
         IORequestLabel = new javax.swing.JLabel();
         CreateButton = new javax.swing.JButton();
+        ticksToRequestIOminus = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        ticksToRequestIOplus = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        ticksToRequestIOLabel = new javax.swing.JLabel();
+        ticksToSatisfyIOLabel = new javax.swing.JLabel();
+        ticksToSatisfyIOplus = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        ticksToSatisfyIOminus = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
 
         jPanel1.setBackground(new java.awt.Color(239, 239, 239));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -99,22 +104,76 @@ public class CreateProcessView extends javax.swing.JPanel {
         });
         jPanel1.add(IOBoundRButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 190, -1, -1));
 
-        IORequestSpinner.setEnabled(false);
-        jPanel1.add(IORequestSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 240, 50, -1));
-
         IOSatisfyLabel.setForeground(new java.awt.Color(153, 153, 153));
-        IOSatisfyLabel.setText("Numero de ciclos para satisfacer operacion de I/O");
-        jPanel1.add(IOSatisfyLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 280, -1, 20));
-
-        IOSatisfySpinner.setEnabled(false);
-        jPanel1.add(IOSatisfySpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 280, 50, -1));
+        IOSatisfyLabel.setText("Numero de ciclos para satisfacer operacion de I/O:");
+        jPanel1.add(IOSatisfyLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 280, -1, 20));
 
         IORequestLabel.setForeground(new java.awt.Color(153, 153, 153));
-        IORequestLabel.setText("Numero de ciclos para generar solicitud de I/O");
-        jPanel1.add(IORequestLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 240, -1, 20));
+        IORequestLabel.setText("Numero de ciclos para generar solicitud de I/O:");
+        jPanel1.add(IORequestLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 240, 250, 20));
 
         CreateButton.setText("Crear!");
         jPanel1.add(CreateButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 350, -1, -1));
+
+        ticksToRequestIOminus.setBackground(new java.awt.Color(153, 153, 153));
+        ticksToRequestIOminus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ticksToRequestIOminusMouseClicked(evt);
+            }
+        });
+        ticksToRequestIOminus.setLayout(new java.awt.GridBagLayout());
+
+        jLabel5.setText("-");
+        ticksToRequestIOminus.add(jLabel5, new java.awt.GridBagConstraints());
+
+        jPanel1.add(ticksToRequestIOminus, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 240, 20, 20));
+
+        ticksToRequestIOplus.setBackground(new java.awt.Color(153, 153, 153));
+        ticksToRequestIOplus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ticksToRequestIOplusMouseClicked(evt);
+            }
+        });
+        ticksToRequestIOplus.setLayout(new java.awt.GridBagLayout());
+
+        jLabel4.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel4.setText("+");
+        ticksToRequestIOplus.add(jLabel4, new java.awt.GridBagConstraints());
+
+        jPanel1.add(ticksToRequestIOplus, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 240, 20, 20));
+
+        ticksToRequestIOLabel.setText("1");
+        jPanel1.add(ticksToRequestIOLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 240, 20, 20));
+
+        ticksToSatisfyIOLabel.setText("1");
+        jPanel1.add(ticksToSatisfyIOLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 280, 20, -1));
+
+        ticksToSatisfyIOplus.setBackground(new java.awt.Color(153, 153, 153));
+        ticksToSatisfyIOplus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ticksToSatisfyIOplusMouseClicked(evt);
+            }
+        });
+        ticksToSatisfyIOplus.setLayout(new java.awt.GridBagLayout());
+
+        jLabel7.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel7.setText("+");
+        ticksToSatisfyIOplus.add(jLabel7, new java.awt.GridBagConstraints());
+
+        jPanel1.add(ticksToSatisfyIOplus, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 280, 20, 20));
+
+        ticksToSatisfyIOminus.setBackground(new java.awt.Color(153, 153, 153));
+        ticksToSatisfyIOminus.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ticksToSatisfyIOminusMouseClicked(evt);
+            }
+        });
+        ticksToSatisfyIOminus.setLayout(new java.awt.GridBagLayout());
+
+        jLabel6.setText("-");
+        ticksToSatisfyIOminus.add(jLabel6, new java.awt.GridBagConstraints());
+
+        jPanel1.add(ticksToSatisfyIOminus, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 280, 20, 20));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -130,19 +189,15 @@ public class CreateProcessView extends javax.swing.JPanel {
 
     private void IOBoundRButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IOBoundRButtonActionPerformed
         if(IOBoundRButton.isSelected()){
-            IORequestLabel.setForeground(Color.black);
-            IORequestSpinner.setEnabled(true);
-            IOSatisfyLabel.setForeground(Color.black);
-            IOSatisfySpinner.setEnabled(true);
+            IORequestLabel.setForeground(Color.black);            
+            IOSatisfyLabel.setForeground(Color.black);            
         }
     }//GEN-LAST:event_IOBoundRButtonActionPerformed
 
     private void cpuBoundRButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cpuBoundRButtonActionPerformed
         if(cpuBoundRButton.isSelected()){
-            IORequestLabel.setForeground(new Color(153, 153, 153));
-            IORequestSpinner.setEnabled(false);
-            IOSatisfyLabel.setForeground(new Color(153, 153, 153));
-            IOSatisfySpinner.setEnabled(false);
+            IORequestLabel.setForeground(new Color(153, 153, 153));            
+            IOSatisfyLabel.setForeground(new Color(153, 153, 153));            
         }
     }//GEN-LAST:event_cpuBoundRButtonActionPerformed
 
@@ -174,19 +229,51 @@ public class CreateProcessView extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_numInstructionsInputFocusLost
 
+    private void ticksToRequestIOplusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOplusMouseClicked
+        if((ticksToRequestIOLabel.getText().length() + 1) < 4){
+            ticksToRequestIOLabel.setText(Integer.toString(Integer.parseInt(ticksToRequestIOLabel.getText()) + 1));
+        }
+    }//GEN-LAST:event_ticksToRequestIOplusMouseClicked
+
+    private void ticksToRequestIOminusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOminusMouseClicked
+        if(Integer.parseInt(ticksToRequestIOLabel.getText()) > 1){
+            ticksToRequestIOLabel.setText(Integer.toString(Integer.parseInt(ticksToRequestIOLabel.getText()) - 1));
+        }
+    }//GEN-LAST:event_ticksToRequestIOminusMouseClicked
+
+    private void ticksToSatisfyIOminusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOminusMouseClicked
+        if(Integer.parseInt(ticksToSatisfyIOLabel.getText()) > 1){
+            ticksToSatisfyIOLabel.setText(Integer.toString(Integer.parseInt(ticksToSatisfyIOLabel.getText()) - 1));
+        }
+    }//GEN-LAST:event_ticksToSatisfyIOminusMouseClicked
+
+    private void ticksToSatisfyIOplusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOplusMouseClicked
+        if((ticksToSatisfyIOLabel.getText().length() + 1) < 4){
+            ticksToSatisfyIOLabel.setText(Integer.toString(Integer.parseInt(ticksToSatisfyIOLabel.getText()) + 1));
+        }
+    }//GEN-LAST:event_ticksToSatisfyIOplusMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CreateButton;
     private javax.swing.JLabel CreateProcessLabel;
     private javax.swing.JRadioButton IOBoundRButton;
     private javax.swing.JLabel IORequestLabel;
-    private javax.swing.JSpinner IORequestSpinner;
     private javax.swing.JLabel IOSatisfyLabel;
-    private javax.swing.JSpinner IOSatisfySpinner;
     private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JRadioButton cpuBoundRButton;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField nameInput;
     private javax.swing.JTextField numInstructionsInput;
+    private javax.swing.JLabel ticksToRequestIOLabel;
+    private javax.swing.JPanel ticksToRequestIOminus;
+    private javax.swing.JPanel ticksToRequestIOplus;
+    private javax.swing.JLabel ticksToSatisfyIOLabel;
+    private javax.swing.JPanel ticksToSatisfyIOminus;
+    private javax.swing.JPanel ticksToSatisfyIOplus;
     // End of variables declaration//GEN-END:variables
 }

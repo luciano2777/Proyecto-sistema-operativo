@@ -17,7 +17,7 @@ public class MainView extends javax.swing.JFrame {
     private int yMouse;
     private final SimulationView simulationView = new SimulationView();
     private final CreateProcessView createProcessView = new CreateProcessView();
-    private final settingsView settingsView = new settingsView();
+    private final SettingsView settingsView = new SettingsView();
     /**
      * Creates new form MainView
      */
