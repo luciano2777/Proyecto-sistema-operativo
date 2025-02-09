@@ -18,11 +18,12 @@ public class ProcessIObound extends Process{
      * Crea un proceso consumidor de entrada/salida dado el nombre, numero de ciclos para que
      * ocurra una excepcion y numero de ciclos para que termine. El ID se genera automaticamente
      * @param name
+     * @param numInstructions
      * @param ciclesForException
      * @param ciclesForSuccess 
      */
-    public ProcessIObound(String name, int ciclesForException, int ciclesForSuccess) {
-        super(name);
+    public ProcessIObound(String name, int numInstructions, int ciclesForException, int ciclesForSuccess) {
+        super(name, numInstructions);
         this.ciclesForException = ciclesForException;
         this.ciclesForSuccess = ciclesForSuccess;
     }   
@@ -39,8 +40,8 @@ public class ProcessIObound extends Process{
      * @param ciclesForException
      * @param ciclesForSuccess 
      */
-    public ProcessIObound(String name, int PC, int MAR, int ciclesForException, int ciclesForSuccess) {
-        super(name, PC, MAR);
+    public ProcessIObound(String name, int numInstructions, int PC, int MAR, int ciclesForException, int ciclesForSuccess) {
+        super(name, numInstructions, PC, MAR);
         this.ciclesForException = ciclesForException;
         this.ciclesForSuccess = ciclesForSuccess;
     }

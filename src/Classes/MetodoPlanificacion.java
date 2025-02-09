@@ -73,11 +73,11 @@ public class MetodoPlanificacion extends MemoryEntity {
     //PRUEBA
      public static void main(String[] args) {
         MetodoPlanificacion mem = new MetodoPlanificacion();
-        Process a = new Process("A",5,1);
-        Process b = new Process("B",3,2);
-        Process c = new Process("C",2,3);
-        Process d = new Process("D",6,3);
-        Process f = new Process("E",9,10);
+        Process a = new Process("A",1, 5,1);
+        Process b = new Process("B",1,3,2);
+        Process c = new Process("C",1,2,3);
+        Process d = new Process("D",1,6,3);
+        Process f = new Process("E",1,9,10);
         mem.AddSRT(a);
         mem.AddSRT(b);
         mem.AddSRT(c);
