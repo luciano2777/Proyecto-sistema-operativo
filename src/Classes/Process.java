@@ -18,6 +18,7 @@ public class Process extends MemoryEntity{
     private String name;
     private int PC;
     private int MAR;
+    private Integer memoryAdress;
     private int numInstructions;
     
     //Constantes
@@ -27,8 +28,8 @@ public class Process extends MemoryEntity{
     
     /***
      * Constructor 1
-     * Crea un proceso solo con el nombre, el PC y el MAR inician en 0
-     * y el ID es generado automaticamente
+     * Crea un proceso solo con el nombre, el PC y el MAR inician en 0.
+     * El ID es generado automaticamente
      * @param name 
      * @param numInstructions 
      */
@@ -38,24 +39,48 @@ public class Process extends MemoryEntity{
         this.name = name;
         this.PC = 0;
         this.MAR = 0;
+        this.memoryAdress = null;
         this.numInstructions = numInstructions;
         processCount++;
     }
     
     /***
      * Constructor 2
-     * Crea un proceso dando el nombre, el Program counter (PC) y 
-     * el Memory Adress Register (MAR), el ID se genera automaticamente 
+     * Crea un proceso dando el nombre, el Program counter (PC),
+     * el Memory Adress Register (MAR) y la direccion de memoria. El ID se genera automaticamente 
      * @param name
+     * @param numInstructions
      * @param PC
      * @param MAR 
+     * @param memoryAdress 
      */
-    public Process(String name, int numInstructions, int PC, int MAR) {
+    public Process(String name, int numInstructions, int PC, int MAR, int memoryAdress) {
         this.ID = processCount;
         this.status = READY;
         this.name = name;
         this.PC = PC;
         this.MAR = MAR;
+        this.memoryAdress = memoryAdress;
+        this.numInstructions = numInstructions;
+        processCount++;
+    }
+    
+    
+    /***
+     * Constructor 3
+     * Crea un proceso dando el nombre, el numero de instrucciones y la direccion
+     * de memoria. El ID se genera automaticamente 
+     * @param name
+     * @param numInstructions
+     * @param memoryAdress
+     */
+    public Process(String name, int numInstructions, int memoryAdress) {
+        this.ID = processCount;
+        this.status = READY;
+        this.name = name;
+        this.PC = 0;
+        this.MAR = 0;
+        this.memoryAdress = memoryAdress;
         this.numInstructions = numInstructions;
         processCount++;
     }

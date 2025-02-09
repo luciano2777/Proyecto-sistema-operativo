@@ -18,7 +18,10 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        MainView mainView = new MainView();        
+        //MainView mainView = new MainView();        
+        
+        ejemplo ejem = new ejemplo(2, 1000);
+        
     }
     
 }

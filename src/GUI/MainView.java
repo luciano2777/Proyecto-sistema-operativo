@@ -6,7 +6,6 @@ package GUI;
 
 import Classes.Job;
 import static GUI.CreateProcessView.NumInstructions;
-import static GUI.settingsView.sourcePath;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JFrame;
@@ -269,10 +268,10 @@ public class MainView extends javax.swing.JFrame {
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         // TODO add your handling code here:
         System.out.println("Iniciando");
-        if(sourcePath.isEmpty())
-            JOptionPane.showMessageDialog(null, "ERROR: Please input the source of computation");
+//        if(sourcePath.isEmpty()) //Meter el sourcepath
+//            JOptionPane.showMessageDialog(null, "ERROR: Please input the source of computation");
         
-        else if(NumInstructions <= 0)
+         if(NumInstructions <= 0)
             JOptionPane.showMessageDialog(null, "ERROR: Por favor introduzca la cantidad correcta de procesos");
         else { //Aquí se ejecuta el codigo si todas las anteriores condiciones se cumplieron.
             Job[] jobs = new Job[NumInstructions];        
