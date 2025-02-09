@@ -12,7 +12,7 @@ import javax.swing.SpinnerNumberModel;
  * @author Juan
  */
 public class CreateProcessView extends javax.swing.JPanel {
-
+static int NumInstructions =0;
     /**
      * Creates new form CreateProcessView
      */
@@ -114,6 +114,11 @@ public class CreateProcessView extends javax.swing.JPanel {
         jPanel1.add(IORequestLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 240, -1, 20));
 
         CreateButton.setText("Crear!");
+        CreateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreateButtonActionPerformed(evt);
+            }
+        });
         jPanel1.add(CreateButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 350, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -173,6 +178,11 @@ public class CreateProcessView extends javax.swing.JPanel {
             numInstructionsInput.setForeground(new Color(102, 102, 102));
         }
     }//GEN-LAST:event_numInstructionsInputFocusLost
+
+    private void CreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateButtonActionPerformed
+        // TODO add your handling code here:
+        NumInstructions = Integer.parseInt(numInstructionsInput.getText()); //Se puede cambiar es para probar lo de generar una nueva tarea
+    }//GEN-LAST:event_CreateButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
