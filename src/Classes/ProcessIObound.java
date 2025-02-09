@@ -31,17 +31,38 @@ public class ProcessIObound extends Process{
     
     /***
      * Constructor 2
-     * Crea un proceso consumidor de entrada/salida dado el nombre, PC, MAR,
-     * numero ciclos para que ocurra una excepcion, y numero de ciclos para terminar el proceso.
-     * El ID se genera automaticamente
+     * Crea un proceso consumidor de entrada/salida dado el nombre, el numero de instrucciones,
+     * PC, MAR, la direccion de memoria, el numero ciclos para que ocurra una excepcion
+     * y numero de ciclos para terminar el proceso. El ID se genera automaticamente
      * @param name
+     * @param numInstructions
      * @param PC
      * @param MAR
      * @param ciclesForException
+     * @param memoryAdress
      * @param ciclesForSuccess 
      */
-    public ProcessIObound(String name, int numInstructions, int PC, int MAR, int ciclesForException, int ciclesForSuccess) {
-        super(name, numInstructions, PC, MAR);
+    public ProcessIObound(String name, int numInstructions, int PC, int MAR, 
+            int memoryAdress, int ciclesForException, int ciclesForSuccess) {
+        super(name, numInstructions, PC, MAR, memoryAdress);
+        this.ciclesForException = ciclesForException;
+        this.ciclesForSuccess = ciclesForSuccess;
+    }
+    
+    
+    /***
+     * Constructor 3
+     * Crea un proceso consumidor de entrada/salida dado el nombre, el numero de instrucciones,
+     * la direccion de memoria, numero ciclos para que ocurra una excepcion y numero de ciclos para terminar el proceso.
+     * El ID se genera automaticamente
+     * @param name
+     * @param numInstructions
+     * @param ciclesForException
+     * @param memoryAdress
+     * @param ciclesForSuccess 
+     */
+    public ProcessIObound(String name, int numInstructions,  int memoryAdress, int ciclesForException, int ciclesForSuccess) {
+        super(name, numInstructions, memoryAdress);
         this.ciclesForException = ciclesForException;
         this.ciclesForSuccess = ciclesForSuccess;
     }

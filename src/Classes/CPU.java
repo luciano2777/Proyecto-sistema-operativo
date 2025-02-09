@@ -106,7 +106,7 @@ public class CPU extends Thread implements ClockListener{
     @Override
     public void onTick(int tick){
         if(this.enabled){
-            System.out.println("Procesador " + this.ID + " en tick " + tick + "| RelojStatus: " + clock.getStatus());            
+            System.out.println("P" + this.ID + " | tick " + tick + "| RelojStatus: " + clock.getStatus());            
         }
     }
     
