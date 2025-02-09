@@ -4,7 +4,8 @@
  */
 package Classes;
 
-import Interfaz.ejemplo;
+import GUI.MainView;
+import GUI.ejemplo;
 
 
 /**
@@ -17,10 +18,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-       ejemplo e = new ejemplo();
-       
-
-        
+        MainView mainView = new MainView();        
     }
     
 }
