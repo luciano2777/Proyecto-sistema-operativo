@@ -4,9 +4,13 @@
  */
 package GUI;
 
+import Classes.Job;
+import static GUI.CreateProcessView.NumInstructions;
+import static GUI.settingsView.sourcePath;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -146,6 +150,11 @@ public class MainView extends javax.swing.JFrame {
 
         startButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         startButton.setText("Iniciar ");
+        startButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startButtonActionPerformed(evt);
+            }
+        });
         leftPanel.add(startButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 320, 80, -1));
 
         settingsButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
@@ -256,6 +265,19 @@ public class MainView extends javax.swing.JFrame {
         bodyPanel.revalidate();
         bodyPanel.repaint();
     }//GEN-LAST:event_SimulationButtonActionPerformed
+
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Iniciando");
+        if(sourcePath.isEmpty())
+            JOptionPane.showMessageDialog(null, "ERROR: Please input the source of computation");
+        
+        else if(NumInstructions <= 0)
+            JOptionPane.showMessageDialog(null, "ERROR: Por favor introduzca la cantidad correcta de procesos");
+        else { //Aquí se ejecuta el codigo si todas las anteriores condiciones se cumplieron.
+            Job[] jobs = new Job[NumInstructions];        
+        }
+    }//GEN-LAST:event_startButtonActionPerformed
 
     /**
      * @param args the command line arguments
