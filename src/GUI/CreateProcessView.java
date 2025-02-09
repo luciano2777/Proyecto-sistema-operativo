@@ -4,6 +4,9 @@
  */
 package GUI;
 
+import java.awt.Color;
+import javax.swing.SpinnerNumberModel;
+
 /**
  *
  * @author Juan
@@ -15,6 +18,12 @@ public class CreateProcessView extends javax.swing.JPanel {
      */
     public CreateProcessView() {
         initComponents();
+        buttonGroup.add(cpuBoundRButton);
+        buttonGroup.add(IOBoundRButton);
+        cpuBoundRButton.setSelected(true);
+        
+        IORequestSpinner.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+        IOSatisfySpinner.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
     }
 
     /**
@@ -26,13 +35,86 @@ public class CreateProcessView extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        CreateProcessLabel = new javax.swing.JLabel();
+        nameInput = new javax.swing.JTextField();
+        numInstructionsInput = new javax.swing.JTextField();
+        cpuBoundRButton = new javax.swing.JRadioButton();
+        IOBoundRButton = new javax.swing.JRadioButton();
+        IORequestSpinner = new javax.swing.JSpinner();
+        IOSatisfyLabel = new javax.swing.JLabel();
+        IOSatisfySpinner = new javax.swing.JSpinner();
+        IORequestLabel = new javax.swing.JLabel();
+        CreateButton = new javax.swing.JButton();
 
+        jPanel1.setBackground(new java.awt.Color(239, 239, 239));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setText("Crear proceso");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 170, -1, -1));
+        CreateProcessLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        CreateProcessLabel.setText("Crear Proceso");
+        jPanel1.add(CreateProcessLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, -1, -1));
+
+        nameInput.setBackground(new java.awt.Color(239, 239, 239));
+        nameInput.setForeground(new java.awt.Color(102, 102, 102));
+        nameInput.setText("Nombre");
+        nameInput.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        nameInput.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                nameInputFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                nameInputFocusLost(evt);
+            }
+        });
+        jPanel1.add(nameInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 100, 200, -1));
+
+        numInstructionsInput.setBackground(new java.awt.Color(239, 239, 239));
+        numInstructionsInput.setForeground(new java.awt.Color(102, 102, 102));
+        numInstructionsInput.setText("Cantidad de instrucciones");
+        numInstructionsInput.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        numInstructionsInput.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                numInstructionsInputFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                numInstructionsInputFocusLost(evt);
+            }
+        });
+        jPanel1.add(numInstructionsInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 140, 200, -1));
+
+        cpuBoundRButton.setText("CPU Bound");
+        cpuBoundRButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cpuBoundRButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(cpuBoundRButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, -1, -1));
+
+        IOBoundRButton.setText("I/O Bound");
+        IOBoundRButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                IOBoundRButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(IOBoundRButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 190, -1, -1));
+
+        IORequestSpinner.setEnabled(false);
+        jPanel1.add(IORequestSpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 240, 50, -1));
+
+        IOSatisfyLabel.setForeground(new java.awt.Color(153, 153, 153));
+        IOSatisfyLabel.setText("Numero de ciclos para satisfacer operacion de I/O");
+        jPanel1.add(IOSatisfyLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 280, -1, 20));
+
+        IOSatisfySpinner.setEnabled(false);
+        jPanel1.add(IOSatisfySpinner, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 280, 50, -1));
+
+        IORequestLabel.setForeground(new java.awt.Color(153, 153, 153));
+        IORequestLabel.setText("Numero de ciclos para generar solicitud de I/O");
+        jPanel1.add(IORequestLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 240, -1, 20));
+
+        CreateButton.setText("Crear!");
+        jPanel1.add(CreateButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 350, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -46,9 +128,65 @@ public class CreateProcessView extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void IOBoundRButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IOBoundRButtonActionPerformed
+        if(IOBoundRButton.isSelected()){
+            IORequestLabel.setForeground(Color.black);
+            IORequestSpinner.setEnabled(true);
+            IOSatisfyLabel.setForeground(Color.black);
+            IOSatisfySpinner.setEnabled(true);
+        }
+    }//GEN-LAST:event_IOBoundRButtonActionPerformed
+
+    private void cpuBoundRButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cpuBoundRButtonActionPerformed
+        if(cpuBoundRButton.isSelected()){
+            IORequestLabel.setForeground(new Color(153, 153, 153));
+            IORequestSpinner.setEnabled(false);
+            IOSatisfyLabel.setForeground(new Color(153, 153, 153));
+            IOSatisfySpinner.setEnabled(false);
+        }
+    }//GEN-LAST:event_cpuBoundRButtonActionPerformed
+
+    private void nameInputFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameInputFocusGained
+        if(nameInput.getText().equals("Nombre")){
+            nameInput.setText("");
+            nameInput.setForeground(Color.black);            
+        }
+    }//GEN-LAST:event_nameInputFocusGained
+
+    private void nameInputFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameInputFocusLost
+        if(nameInput.getText().isBlank()){            
+            nameInput.setText("Nombre");
+            nameInput.setForeground(new Color(102, 102, 102));
+        }
+    }//GEN-LAST:event_nameInputFocusLost
+
+    private void numInstructionsInputFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_numInstructionsInputFocusGained
+        if(numInstructionsInput.getText().equals("Cantidad de instrucciones")){
+            numInstructionsInput.setText("");
+            numInstructionsInput.setForeground(Color.black);            
+        }
+    }//GEN-LAST:event_numInstructionsInputFocusGained
+
+    private void numInstructionsInputFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_numInstructionsInputFocusLost
+        if(numInstructionsInput.getText().isBlank()){            
+            numInstructionsInput.setText("Cantidad de instrucciones");
+            numInstructionsInput.setForeground(new Color(102, 102, 102));
+        }
+    }//GEN-LAST:event_numInstructionsInputFocusLost
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton CreateButton;
+    private javax.swing.JLabel CreateProcessLabel;
+    private javax.swing.JRadioButton IOBoundRButton;
+    private javax.swing.JLabel IORequestLabel;
+    private javax.swing.JSpinner IORequestSpinner;
+    private javax.swing.JLabel IOSatisfyLabel;
+    private javax.swing.JSpinner IOSatisfySpinner;
+    private javax.swing.ButtonGroup buttonGroup;
+    private javax.swing.JRadioButton cpuBoundRButton;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField nameInput;
+    private javax.swing.JTextField numInstructionsInput;
     // End of variables declaration//GEN-END:variables
 }

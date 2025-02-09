@@ -58,10 +58,9 @@ public class MainView extends javax.swing.JFrame {
         minimizeLabel = new javax.swing.JLabel();
         leftPanel = new javax.swing.JPanel();
         createProcessButton = new javax.swing.JToggleButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        pauseButton = new javax.swing.JButton();
+        finishButton = new javax.swing.JButton();
+        startButton = new javax.swing.JButton();
         settingsButton = new javax.swing.JToggleButton();
         SimulationButton = new javax.swing.JToggleButton();
         bodyPanel = new javax.swing.JPanel();
@@ -137,17 +136,17 @@ public class MainView extends javax.swing.JFrame {
         });
         leftPanel.add(createProcessButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 100, 50));
 
-        jButton1.setText("jButton1");
-        leftPanel.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 290, -1, -1));
+        pauseButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        pauseButton.setText("Parar");
+        leftPanel.add(pauseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 80, -1));
 
-        jButton2.setText("jButton2");
-        leftPanel.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, -1, -1));
+        finishButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        finishButton.setText("Terminar");
+        leftPanel.add(finishButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, 80, -1));
 
-        jButton3.setText("jButton3");
-        leftPanel.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, -1, -1));
-
-        jButton4.setText("jButton4");
-        leftPanel.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 320, -1, -1));
+        startButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        startButton.setText("Iniciar ");
+        leftPanel.add(startButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 320, 80, -1));
 
         settingsButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         settingsButton.setText("Configuracion");
@@ -300,14 +299,13 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JPanel closeButton;
     private javax.swing.JLabel closeLabel;
     private javax.swing.JToggleButton createProcessButton;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton finishButton;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JPanel minimizeButton;
     private javax.swing.JLabel minimizeLabel;
+    private javax.swing.JButton pauseButton;
     private javax.swing.JToggleButton settingsButton;
+    private javax.swing.JButton startButton;
     private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 }

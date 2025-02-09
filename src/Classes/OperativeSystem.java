@@ -35,8 +35,8 @@ public class OperativeSystem extends MemoryEntity{
         this.blockedQueue = blockedQueue;
     }
     
-    public void createProcessCPUbound(String processName){
-        ProcessCPUbound process = new ProcessCPUbound(processName);
+        public void createProcessCPUbound(String name, int numInstructions, int PC, int MAR){
+        ProcessCPUbound process = new ProcessCPUbound(name, numInstructions, PC, MAR);
         
         
     }

@@ -18,7 +18,7 @@ public class Process extends MemoryEntity{
     private String name;
     private int PC;
     private int MAR;
-    private int NumInstructions;
+    private int numInstructions;
     
     //Constantes
     private static final int RUNNING = 0;
@@ -30,15 +30,15 @@ public class Process extends MemoryEntity{
      * Crea un proceso solo con el nombre, el PC y el MAR inician en 0
      * y el ID es generado automaticamente
      * @param name 
+     * @param numInstructions 
      */
-    public Process(String name) {
+    public Process(String name, int numInstructions) {
         this.ID = processCount;
         this.status = READY;
         this.name = name;
         this.PC = 0;
         this.MAR = 0;
-        this.NumInstructions = 0;
-        
+        this.numInstructions = numInstructions;
         processCount++;
     }
     
@@ -50,13 +50,13 @@ public class Process extends MemoryEntity{
      * @param PC
      * @param MAR 
      */
-    public Process(String name, int PC, int MAR, int NumInstructions) {
+    public Process(String name, int numInstructions, int PC, int MAR) {
         this.ID = processCount;
         this.status = READY;
         this.name = name;
         this.PC = PC;
         this.MAR = MAR;
-        this.NumInstructions = NumInstructions;
+        this.numInstructions = numInstructions;
         processCount++;
     }
 
@@ -98,11 +98,11 @@ public class Process extends MemoryEntity{
     }
     
     public int getInstructions() {
-        return NumInstructions;
+        return numInstructions;
     }
 
     public void setInstructions(int MAR) {
-        this.MAR = NumInstructions;
+        this.MAR = numInstructions;
     }
     
     //-------------------Procedimientos y Metodos-----------------------
