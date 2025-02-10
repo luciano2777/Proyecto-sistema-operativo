@@ -13,25 +13,26 @@ import DataStructures.List;
 public class Simulator {
     //Atributos 
     private CPU[] CPUarray;
-    private List<MemoryEntity> mainMemory;   
+    private MemoryEntity[] mainMemory;   
     private Clock clock;
+    private OperatingSystem operatingSystem;
+    
 
    /***
     * Constructor: Crea el simulador una memoria principal, 3 CPU y habilita los que se especifique 
     * en el parametro numCPUenable, solo puede haber un minimo de 2 habilitados y un maximo de 3.
-    * En memoria principal ya esta cargado el SO en el indice 0 por lo que se puede acceder a el con
-    * mainMemory.get(0);
     * @param numCPUenable 
     * @param interval 
     */
-    public Simulator(int numCPUenable, int interval) {
+    public Simulator(int numCPUenable, int interval, int ticksPerInstruction) {
         if(numCPUenable == 2 || numCPUenable == 3){
             this.CPUarray = new CPU[3];
-            this.mainMemory = new List(new OperativeSystem());  
+            this.mainMemory = new MemoryEntity[1000];  
             this.clock = new Clock(interval);
+            this.operatingSystem = new OperatingSystem(CPUarray);
             
             for (int i = 0; i < 3; i++) {
-                CPU newCPU = new CPU(i, this.mainMemory, this.clock);
+                CPU newCPU = new CPU(i, this.mainMemory, this.clock, ticksPerInstruction);
                 if(i < numCPUenable){
                     newCPU.setEnabled(true);
                 }
@@ -54,16 +55,32 @@ public class Simulator {
         this.CPUarray = CPUarray;
     }
 
-    public List getMainMemory() {
+    public MemoryEntity[] getMainMemory() {
         return mainMemory;
     }
 
-    public void setMainMemory(List mainMemory) {
+    public void setMainMemory(MemoryEntity[] mainMemory) {
         this.mainMemory = mainMemory;
     }  
+
+    public OperatingSystem getOperatingSystem() {
+        return operatingSystem;
+    }
+
+    public void setOperatingSystem(OperatingSystem operatingSystem) {
+        this.operatingSystem = operatingSystem;
+    }                
     
     
     //--------------------Procedimientos y Metodos----------------------
+    
+    
+    /***
+     * Carga inicialmente el sistema operativo
+     */
+    public void bootLoader(){
+        this.mainMemory[0] = operatingSystem;
+    }
     
     /***
      * Metodo para cambiar la velocidad de ejecucion
@@ -74,6 +91,7 @@ public class Simulator {
             this.clock.setInterval(interval);            
         }
     }
+    
         
     public void stopSimulation(){
         if(this.clock.getStatus() == Clock.RUNNING){
@@ -92,12 +110,26 @@ public class Simulator {
         System.out.println("Simulacion terminada");
     }
     
+    
     /***
      * Metodo para iniciar la ejecucion del simulador
      */
     public void startSimulation(){
-        clock.start();
+        if(!this.operatingSystem.getSchealuder().getReadyQueue().isEmpty()){
+            clock.start();
+            bootLoader();        
+        }
+        else{
+            System.err.println("No hay procesos para ejecutarse");
+        }
     }
+    
+    
+    public void createProcessCPUBound(String processName, int numInstructions, int memoryAdress){
+        ProcessCPUbound process = this.operatingSystem.createProcessCPUbound(processName, numInstructions, memoryAdress);
+        mainMemory[process.getMemoryAdress()] = process;        
+    }
+    
     
 
     

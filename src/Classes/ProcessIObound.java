@@ -10,8 +10,8 @@ package Classes;
  */
 public class ProcessIObound extends Process{
     //Atributos
-    private int ciclesForException;
-    private int ciclesForSuccess;
+    private int cyclesForException;
+    private int cyclesForSuccess;
        
     /***
      * Constructor 1
@@ -19,13 +19,13 @@ public class ProcessIObound extends Process{
      * ocurra una excepcion y numero de ciclos para que termine. El ID se genera automaticamente
      * @param name
      * @param numInstructions
-     * @param ciclesForException
-     * @param ciclesForSuccess 
+     * @param cyclesForException
+     * @param cyclesForSuccess 
      */
-    public ProcessIObound(String name, int numInstructions, int ciclesForException, int ciclesForSuccess) {
+    public ProcessIObound(String name, int numInstructions, int cyclesForException, int cyclesForSuccess) {
         super(name, numInstructions);
-        this.ciclesForException = ciclesForException;
-        this.ciclesForSuccess = ciclesForSuccess;
+        this.cyclesForException = cyclesForException;
+        this.cyclesForSuccess = cyclesForSuccess;
     }   
     
     
@@ -38,15 +38,15 @@ public class ProcessIObound extends Process{
      * @param numInstructions
      * @param PC
      * @param MAR
-     * @param ciclesForException
+     * @param cyclesForException
      * @param memoryAdress
-     * @param ciclesForSuccess 
+     * @param cyclesForSuccess 
      */
     public ProcessIObound(String name, int numInstructions, int PC, int MAR, 
-            int memoryAdress, int ciclesForException, int ciclesForSuccess) {
+            int memoryAdress, int cyclesForException, int cyclesForSuccess) {
         super(name, numInstructions, PC, MAR, memoryAdress);
-        this.ciclesForException = ciclesForException;
-        this.ciclesForSuccess = ciclesForSuccess;
+        this.cyclesForException = cyclesForException;
+        this.cyclesForSuccess = cyclesForSuccess;
     }
     
     
@@ -57,15 +57,33 @@ public class ProcessIObound extends Process{
      * El ID se genera automaticamente
      * @param name
      * @param numInstructions
-     * @param ciclesForException
+     * @param cyclesForException
      * @param memoryAdress
-     * @param ciclesForSuccess 
+     * @param cyclesForSuccess 
      */
-    public ProcessIObound(String name, int numInstructions,  int memoryAdress, int ciclesForException, int ciclesForSuccess) {
+    public ProcessIObound(String name, int numInstructions,  int memoryAdress, int cyclesForException, int cyclesForSuccess) {
         super(name, numInstructions, memoryAdress);
-        this.ciclesForException = ciclesForException;
-        this.ciclesForSuccess = ciclesForSuccess;
+        this.cyclesForException = cyclesForException;
+        this.cyclesForSuccess = cyclesForSuccess;
     }
+
+    public int getCyclesForException() {
+        return cyclesForException;
+    }
+
+    public void setCyclesForException(int cyclesForException) {
+        this.cyclesForException = cyclesForException;
+    }
+
+    public int getCyclesForSuccess() {
+        return cyclesForSuccess;
+    }
+
+    public void setCyclesForSuccess(int cyclesForSuccess) {
+        this.cyclesForSuccess = cyclesForSuccess;
+    }
+    
+    
     
     
     
