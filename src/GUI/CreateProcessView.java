@@ -12,7 +12,7 @@ import javax.swing.SpinnerNumberModel;
  * @author Juan
  */
 public class CreateProcessView extends javax.swing.JPanel {
-static int NumInstructions =0;
+public static int NumInstructions =0;
     /**
      * Creates new form CreateProcessView
      */

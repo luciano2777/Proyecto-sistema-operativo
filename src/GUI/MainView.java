@@ -1,10 +1,12 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package GUI;
 
-import Classes.Job;
+import CPUScheduler.CalcSimulation;
+import CPUScheduler.Job;
 import static GUI.CreateProcessView.NumInstructions;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -274,7 +276,21 @@ public class MainView extends javax.swing.JFrame {
          if(NumInstructions <= 0)
             JOptionPane.showMessageDialog(null, "ERROR: Por favor introduzca la cantidad correcta de procesos");
         else { //Aquí se ejecuta el codigo si todas las anteriores condiciones se cumplieron.
-            Job[] jobs = new Job[NumInstructions];        
+            Job[] jobs = new Job[NumInstructions];       
+            String SelectedAlgo = "FCFS";
+            for(int i = 1; i <= NumInstructions; i++) {
+                String processID = "P"+i;
+                long arrivalTime = (new java.util.Random().nextInt(9) + 1) * 300;
+                long burstTime = (new java.util.Random().nextInt(3) + 1) * 100;
+                long STRTTIME = System.nanoTime();
+                
+                Job newJob = new Job(processID, arrivalTime, burstTime, STRTTIME);
+                jobs[(i-1)] = newJob;
+            }
+                CalcSimulation sim = new CalcSimulation(jobs, NumInstructions, "text", SelectedAlgo);
+            sim.start();
+            this.dispose();
+            
         }
     }//GEN-LAST:event_startButtonActionPerformed
 
