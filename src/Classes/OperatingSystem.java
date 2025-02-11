@@ -6,15 +6,17 @@ package Classes;
 
 import DataStructures.List;
 import DataStructures.Queue;
+import GUI.ejemplo;
 
 /**
  *
  * @author Juan
  */
 public class OperatingSystem extends MemoryEntity implements ClockListener{
-    private Schealuder schealuder;    
+    private Scheduler schealuder;    
     private int planningPolicy;
     private CPU[] CPUarray;
+    private MemoryEntity[] mainMemory;
     
     private final static int FIFO = 0;
     private final static int FCFS = 1;
@@ -26,17 +28,18 @@ public class OperatingSystem extends MemoryEntity implements ClockListener{
     
     
 
-    public OperatingSystem(CPU[] CPUarray) {    
-        this.schealuder = new Schealuder(CPUarray);  
+    public OperatingSystem(CPU[] CPUarray, MemoryEntity[] mainMemory) {    
+        this.schealuder = new Scheduler(CPUarray, mainMemory);  
         this.planningPolicy = 0;
         this.CPUarray = CPUarray;
+        this.mainMemory = mainMemory;
     }
 
-    public Schealuder getSchealuder() {
+    public Scheduler getScheduler() {
         return schealuder;
     }
 
-    public void setSchealuder(Schealuder schealuder) {
+    public void setScheduler(Scheduler schealuder) {
         this.schealuder = schealuder;
     }
 
@@ -55,61 +58,60 @@ public class OperatingSystem extends MemoryEntity implements ClockListener{
     public void setCPUarray(CPU[] CPUarray) {
         this.CPUarray = CPUarray;
     }
-    
-    
-    
+
+    public MemoryEntity[] getMainMemory() {
+        return mainMemory;
+    }
+
+    public void setMainMemory(MemoryEntity[] mainMemory) {
+        this.mainMemory = mainMemory;
+    }
 
     
-    public void enableCPU(int numCPU){
-        
+    public void createProcessCPUbound(String processName, int numInstructions, int memoryAdress){  
+        ProcessCPUbound process = new ProcessCPUbound(processName, numInstructions, memoryAdress);
+        this.schealuder.getReadyQueue().enqueue(process.getMemoryAdress());
+        this.mainMemory[process.getMemoryAdress()] = process;                             
     }
     
-    public ProcessCPUbound createProcessCPUbound(String processName, int numInstructions, int memoryAdress){
-        if(memoryAdress == 0){
-            System.err.println("Area de memoria no disponible");
-            return null;
-        }
-        else{
-            ProcessCPUbound process = new ProcessCPUbound(processName, numInstructions, memoryAdress);
-            this.schealuder.getReadyQueue().enqueue(process);
-            return process;            
-        }
-        
-    }
-    
-    public ProcessIObound createProcessIObound(String processName, int numInstructions, int memoryAdress, 
+    public void createProcessIObound(String processName, int numInstructions, int memoryAdress, 
             int cyclesForException, int cyclesForSuccess){
-        if(memoryAdress == 0){
-            System.err.println("Area de memoria no disponible");
-            return null;
-        }
-        else{
-            ProcessIObound process = new ProcessIObound(processName, numInstructions, memoryAdress, 
-                    cyclesForException, cyclesForSuccess);
-            this.schealuder.getReadyQueue().enqueue(process);
-            return process;            
-        }
+        ProcessIObound process = new ProcessIObound(processName, numInstructions, memoryAdress, 
+                cyclesForException, cyclesForSuccess);
+        this.schealuder.getReadyQueue().enqueue(process.getMemoryAdress());        
+        this.mainMemory[process.getMemoryAdress()] = process;                           
     }
         
     
-    public Process assignNextProcess(){                    
+    public Integer assignNextProcess(){                    
         switch(this.planningPolicy){
-            case 0: 
+            case 0:                  
                 return this.schealuder.FIFO();
             default:
                 return null;
         }                                    
-    }
+    }   
+    
     
     
 
     @Override
     public void onTick(int tick) {
         switch(this.planningPolicy){
-            case 0:
-                this.schealuder.InOutFIFO();            
+            case 0 -> this.schealuder.InOutFIFO();            
         }
-        //System.out.println(this.schealuder.getReadyQueue());
+        System.out.println("");
+        
+        boolean finished = true;
+        for(CPU cpu: CPUarray){
+            if(cpu.isEnabled()){
+                finished = false;
+            }
+        }
+        
+        if(finished){
+            
+        }
     }
     
 

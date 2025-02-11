@@ -4,6 +4,7 @@
  */
 package Classes;
 
+import DataStructures.Queue;
 import GUI.MainView;
 import GUI.ejemplo;
 
@@ -20,15 +21,24 @@ public class Main {
     public static void main(String[] args) {
         //MainView mainView = new MainView();                        
         
-        Simulator sim = new Simulator(2, 3000, 1);
+        Simulator sim = new Simulator(2, 300, 1);
         
-        sim.getOperatingSystem().createProcessIObound("P1", 6, 1, 2, 2);
-        sim.getOperatingSystem().createProcessCPUbound("P2", 6, 2);
-        sim.getOperatingSystem().createProcessCPUbound("P3", 6, 3);
-        sim.getOperatingSystem().createProcessCPUbound("P4", 6, 4);
-        sim.getOperatingSystem().createProcessCPUbound("P5", 6, 5);
+        sim.createProcessIObound("P0", 6, 1, 2, 2);
+        sim.createProcessIObound("P1", 6, 2, 2, 2);
+        sim.createProcessCPUbound("P2", 6, 3);
+        sim.createProcessCPUbound("P3", 6, 4);
+        sim.createProcessCPUbound("P4", 6, 5);
+        sim.createProcessCPUbound("P5", 6, 6);
+        sim.createProcessIObound("P6", 6, 7, 2, 2);
+                
+        System.out.println(sim.getOperatingSystem().getScheduler().getReadyQueue());
+       
         
         sim.startSimulation();
+
+
+//        ejemplo e = new ejemplo();
+//        e.setVisible(true);
         
         
     }

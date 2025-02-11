@@ -41,7 +41,7 @@ public class MainView extends javax.swing.JFrame {
     
     
     private String[] loadSettings(){
-        File filePath = new File("src\\Config\\config.txt");
+        File filePath = new File("config.txt");
         
         BufferedReader bufferedReader = null;
         try {

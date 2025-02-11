@@ -4,7 +4,12 @@
  */
 package GUI;
 
+import Classes.CPU;
 import Classes.Simulator;
+import DataStructures.Queue;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -12,17 +17,46 @@ import Classes.Simulator;
  */
 public class ejemplo extends javax.swing.JFrame {
     //Atributos
-    private final Simulator sim;    
+    private final Simulator sim = new Simulator(2, 2000, 1);    
+    private Queue queue1;
+    private Queue queue2;
     
-    public ejemplo() {
+    public ejemplo(Queue queue1, Queue queue2) {
         initComponents();
-        this.sim = new Simulator(2, 1000, 1);        
+        this.queue1 = queue1;
+        this.queue2 = queue2;      
+        
         this.setVisible(true);
     }
+
+    public JTextArea getColaListos() {
+        return colaListos;
+    }
+
+    public void setColaListos(JTextArea colaListos) {
+        this.colaListos = colaListos;
+    }
+
+    public JTextArea getColaBloqueados() {
+        return colaBloqueados;
+    }
+
+    public void setColaBloqueados(JTextArea colaBloqueados) {
+        this.colaBloqueados = colaBloqueados;
+    }
+
+
+    
+    
     
     public ejemplo(int cpuEnabled, int interval){
-        initComponents();
-        this.sim = new Simulator(cpuEnabled, interval, 1);        
+        initComponents();         
+        this.sim.createProcessIObound("P0", 5, 1, 3, 3);
+        this.sim.createProcessIObound("P1", 5, 2, 3, 3);
+        this.sim.createProcessCPUbound("P2", 5, 3);
+        this.sim.createProcessCPUbound("P3", 5, 4);
+        this.sim.createProcessCPUbound("P4", 5, 5);
+        this.sim.createProcessCPUbound("P5", 5, 6);
         this.setVisible(true);
     }
     
@@ -45,6 +79,15 @@ public class ejemplo extends javax.swing.JFrame {
         endButton = new javax.swing.JButton();
         changeIntervalInput = new javax.swing.JButton();
         startSimulationButton = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        CPU1 = new javax.swing.JLabel();
+        CPU2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        colaBloqueados = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        colaListos = new javax.swing.JTextArea();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -85,6 +128,32 @@ public class ejemplo extends javax.swing.JFrame {
             }
         });
 
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        CPU1.setText("CPU1: ");
+        jPanel1.add(CPU1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+
+        CPU2.setText("CPU2: ");
+        jPanel1.add(CPU2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
+
+        jLabel3.setText("Cola listos");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, -1));
+
+        colaBloqueados.setColumns(20);
+        colaBloqueados.setRows(5);
+        jScrollPane1.setViewportView(colaBloqueados);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 90, 130, 200));
+
+        colaListos.setColumns(20);
+        colaListos.setRows(5);
+        jScrollPane2.setViewportView(colaListos);
+
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 130, 200));
+
+        jLabel4.setText("Cola bloqueados");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 70, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -113,7 +182,8 @@ public class ejemplo extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(124, 124, 124)
                         .addComponent(startSimulationButton)))
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addGap(84, 84, 84)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -129,9 +199,10 @@ public class ejemplo extends javax.swing.JFrame {
                     .addComponent(resumeButton)
                     .addComponent(pauseButton)
                     .addComponent(endButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(startSimulationButton)
                 .addGap(33, 33, 33))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -148,6 +219,29 @@ public class ejemplo extends javax.swing.JFrame {
 
     private void startSimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startSimulationButtonActionPerformed
         this.sim.startSimulation();
+        
+        JLabel[] array = new JLabel[2];
+        array[0] = CPU1;
+        array[1] = CPU2;
+        
+        for (int i = 0; i < 2; i++) {
+            switch (this.sim.getCPUarray()[i].getIR()) {
+                case CPU.RUN_OS -> array[i].setText("CPU1: SO");
+                case CPU.RUN_PROCESS -> {
+                    if(this.sim.getCPUarray()[0].getCurrentProcess() != null){
+                        array[i].setText("CPU1: " + this.sim.getCPUarray()[0].getCurrentProcess().getName());                        
+                    }
+                }
+                case CPU.BLOCK_PROCESS -> array[i].setText("CPU1: bloqueando proceso");
+                default -> {
+                }
+            }
+            
+        }
+        
+        
+        
+        
     }//GEN-LAST:event_startSimulationButtonActionPerformed
 
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
@@ -158,46 +252,22 @@ public class ejemplo extends javax.swing.JFrame {
         this.sim.finishSimulation();
     }//GEN-LAST:event_endButtonActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ejemplo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ejemplo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ejemplo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ejemplo.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ejemplo().setVisible(true);
-            }
-        });
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel CPU1;
+    private javax.swing.JLabel CPU2;
     private javax.swing.JButton changeIntervalInput;
+    private javax.swing.JTextArea colaBloqueados;
+    private javax.swing.JTextArea colaListos;
     private javax.swing.JButton endButton;
     private javax.swing.JTextField intervalInput;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton pauseButton;
     private javax.swing.JButton resumeButton;
     private javax.swing.JButton startSimulationButton;

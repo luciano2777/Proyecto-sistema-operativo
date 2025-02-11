@@ -14,8 +14,8 @@ public class Simulator {
     //Atributos 
     private CPU[] CPUarray;
     private MemoryEntity[] mainMemory;   
-    private Clock clock;
     private OperatingSystem operatingSystem;    
+    private Clock clock;
     
 
    /***
@@ -29,7 +29,7 @@ public class Simulator {
             this.CPUarray = new CPU[3];
             this.mainMemory = new MemoryEntity[1000];  
             this.clock = new Clock(interval);
-            this.operatingSystem = new OperatingSystem(CPUarray);            
+            this.operatingSystem = new OperatingSystem(this.CPUarray, this.mainMemory);            
             
             for (int i = 0; i < 3; i++) {
                 CPU newCPU = new CPU(i, this.mainMemory, this.clock, ticksPerInstruction);
@@ -116,7 +116,7 @@ public class Simulator {
      * Metodo para iniciar la ejecucion del simulador
      */
     public void startSimulation(){
-        if(!this.operatingSystem.getSchealuder().getReadyQueue().isEmpty()){
+        if(!this.operatingSystem.getScheduler().getReadyQueue().isEmpty()){
             clock.start();
             bootLoader();        
         }
@@ -127,17 +127,25 @@ public class Simulator {
     
     
     public void createProcessCPUbound(String processName, int numInstructions, int memoryAdress){
-        ProcessCPUbound process = this.operatingSystem.createProcessCPUbound(processName, numInstructions, memoryAdress);
-        mainMemory[process.getMemoryAdress()] = process;        
+        if(mainMemory[memoryAdress] != null || memoryAdress != 0){
+            this.operatingSystem.createProcessCPUbound(processName, numInstructions, memoryAdress);                    
+        }
+        else{
+            System.err.println("Area de memoria no disponible");
+        }
     }
     
     
     
     public void createProcessIObound(String processName, int numInstructions, int memoryAdress,
-            int ticksToInterrupt, int ticksToSuccess){
-        ProcessIObound process = this.operatingSystem.createProcessIObound(processName, numInstructions, memoryAdress, 
-                ticksToInterrupt, ticksToSuccess);
-        mainMemory[process.getMemoryAdress()] = process;        
+            int ticksToInterrupt, int ticksToSuccess){        
+        if(mainMemory[memoryAdress] != null || memoryAdress != 0){
+            this.operatingSystem.createProcessIObound(processName, numInstructions, memoryAdress, 
+                    ticksToInterrupt, ticksToSuccess);                   
+        }
+        else{
+            System.err.println("Area de memoria no disponible");
+        }
     }
     
     

@@ -81,17 +81,14 @@ public class Queue<T> {
      * @return 
      */
     public T dequeue(){
-        if(isEmpty()){
-            System.err.println("Error: empty queue");
-        }
-        else{
+        if(!isEmpty()){            
             Node<T> newFirst = this.first.getNext();
             T data = this.first.getData();
             this.first.setNext(null);
             this.first = newFirst;
             this.size--;
             return data;
-        }
+        }        
         return null;
     }
     
@@ -103,7 +100,7 @@ public class Queue<T> {
     public String toString() {
         String queue = null;
         if(isEmpty()){
-            System.err.println("Error: empty queue");
+            return "Empty";
         }
         else{
             queue = "";

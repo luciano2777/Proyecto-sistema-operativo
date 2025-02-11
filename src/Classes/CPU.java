@@ -17,6 +17,7 @@ public class CPU extends Thread implements ClockListener{
     private int ID;
     private int PC;
     private int MAR;
+    private int IR;
     private boolean enabled;  
     private MemoryEntity[] mainMemory;
     private Clock clock;
@@ -25,7 +26,12 @@ public class CPU extends Thread implements ClockListener{
     private OperatingSystem operatingSystem;
     private int ticksPerInstruction;
     private int ticksCounter = 0;
-       
+    
+    //Instrucciones
+    public final static int RUN_OS = 0;
+    public final static int RUN_PROCESS = 1;
+    public final static int BLOCK_PROCESS = 2;
+    public final static int RUN_IDLE_PROCESS = 3;
     
     /***
      * Constructor 1: Crea un CPU con los valores de PC y MAR en 0
@@ -60,6 +66,7 @@ public class CPU extends Thread implements ClockListener{
         this.ID = ID;
         this.PC = PC;
         this.MAR = MAR;
+        this.IR = 0;
         this.enabled = false;
         this.mainMemory = mainMemory;
         this.clock = clock;
@@ -146,6 +153,22 @@ public class CPU extends Thread implements ClockListener{
         this.ticksCounter = ticksCounter;
     }
 
+    public int getIR() {
+        return IR;
+    }
+
+    public void setIR(int IR) {
+        this.IR = IR;
+    }
+
+    public OperatingSystem getOperatingSystem() {
+        return operatingSystem;
+    }
+
+    public void setOperatingSystem(OperatingSystem operatingSystem) {
+        this.operatingSystem = operatingSystem;
+    }
+
     
     
     
@@ -153,63 +176,101 @@ public class CPU extends Thread implements ClockListener{
     //----------------procedimientos y Metodos---------------
     @Override
     public void onTick(int tick){
-        this.ticksCounter++;      
-        if(this.enabled && (this.ticksCounter == this.ticksPerInstruction)){            
-            if(this.operatingSystem != null){                
-                System.out.println(this + "   Corrinedo SO");            
-                runOperativeSystem();
-            }
-            else if(this.currentProcess != null){
-                System.out.println(this + "   " + this.currentProcess);            
-                runProcess();
-            }
-            if(this.currentProcess == null && this.operatingSystem == null){
-                System.out.println(this + "   Corrinedo SO");
-                runOperativeSystem();                
-            }
-            this.ticksCounter = 0;
-        }        
-    }
-    
-    public void runOperativeSystem(){
-        try {
-            this.semaphore.acquire();
+        if(this.enabled){
+            this.ticksCounter++;       
             
-            OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
-            this.operatingSystem = OS;
-            this.currentProcess = this.operatingSystem.assignNextProcess();            
-            if(this.currentProcess != null){
-                this.PC = this.currentProcess.getPC();
-                this.MAR = this.currentProcess.getMAR();
-                this.operatingSystem = null;                
-            }
-            else{
-                this.clock.stopClock();
-            }
-            
-            this.semaphore.release();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(CPU.class.getName()).log(Level.SEVERE, null, ex);
+            if(this.ticksCounter == this.ticksPerInstruction){                           
+
+                switch(IR){
+                    case RUN_OS -> {
+                        System.out.println(this + "   Corrinedo SO");            
+                        runOperativeSystem();                    
+                    }
+                    case RUN_PROCESS -> {            
+                        System.out.println(this + "   " + this.currentProcess);
+                        runProcess();                    
+                    }
+                    case BLOCK_PROCESS -> {
+                        System.out.println(this + "   Bloqueando " + this.currentProcess);
+                        blockProcess();                    
+                    }
+                    case RUN_IDLE_PROCESS -> {
+                        runIdleProcess();
+                    }
+                }            
+                this.ticksCounter = 0;            
+            }        
         }
     }
     
-    public void runProcess(){
-        if((this.MAR < this.currentProcess.getNumInstructions()) && !isInterrupted()){ 
-            this.currentProcess.setStatus(Process.RUNNING);
+    
+    /***
+     * Ejecuta el SO en el procesador
+     */
+    public void runOperativeSystem(){
+        try {
+            this.semaphore.acquire();                        
+            
+            //Carga SO
+            OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
+            
+            //Elige el siguiente proceso segun la planificacion
+            Integer memoryAdress = OS.assignNextProcess();
+            
+            if(memoryAdress == null){
+                System.out.println(" -> Simulacion Finalizada");
+                this.enabled = false;
+                return;
+            }
+            
+            //Si la direccion es 0 (SO) ejecuta el proceso de espera
+            if(memoryAdress == 0){
+                this.IR = RUN_IDLE_PROCESS;
+                return;
+            }
+                        
+            this.currentProcess = (Process) this.mainMemory[memoryAdress];             
+            if(this.currentProcess != null){                    
+                //Carga el contexto del PCB y lo pone en estado de ready
+                this.PC = this.currentProcess.getPC();
+                this.MAR = this.currentProcess.getMAR();       
+                this.currentProcess.setStatus(Process.RUNNING);
+                this.IR = RUN_PROCESS;
+            }
+            else{
+                //Si no hay mas procesos detener la ejecucion
+                this.clock.stopClock();
+            }                
+            
+            
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CPU.class.getName()).log(Level.SEVERE, null, ex);
+        } finally{
+            this.semaphore.release();            
+        }
+    }
+    
+    
+    /***
+     * Ejecuta un proceso cargado en memoria principal en el procesador
+     */
+    public void runProcess(){  
+        //Si el proceso no ha terminado y no ha sido interrumpido -> seguir ejecutando
+        if((this.MAR < this.currentProcess.getNumInstructions()) && !isInterrupted() && (this.currentProcess.getStatus() == Process.RUNNING)){             
             
             //Si el procesos es I/O bound
             if(this.currentProcess.getClass().getSimpleName().equals("ProcessIObound")){
                 ProcessIObound process = (ProcessIObound) this.currentProcess;
-                process.increaseTicksCountException();
                 
-                if(process.getTicksCountException() == process.getTicksForException()){
-                    this.operatingSystem = (OperatingSystem) this.mainMemory[0];
-                    this.operatingSystem.getSchealuder().getBlockedQueue().enqueue(process); //Proceso bloqueado
-                    this.currentProcess = null;
-                    return;
-                }              
+                if(!process.isOperationDone()){
+                    if(process.getTicksCountException() == process.getTicksForException()){                    
+                        this.IR = BLOCK_PROCESS; //Bloquear proceso
+                        return;
+                    }              
+                    process.increaseTicksCountException();                    
+                }
             }
-            
+                        
             this.PC = this.currentProcess.getPC();
             this.MAR = this.currentProcess.getMAR();
 
@@ -219,12 +280,77 @@ public class CPU extends Thread implements ClockListener{
             this.currentProcess.setPC(this.PC);
             this.currentProcess.setMAR(this.MAR);
         }
+        
+        //Si el proceso termino o fue interrumpido -> Llamar al SO
         else{
-            this.operatingSystem = (OperatingSystem) this.mainMemory[0];
+            if(this.MAR >= this.currentProcess.getNumInstructions()){
+                try {
+                    this.semaphore.acquire();
+                                        
+                    this.currentProcess.setStatus(Process.TERMINATED);
+                    OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
+                    OS.getScheduler().getCompletedProcessList().append(this.currentProcess);
+                    
+                    List<Process> processList = OS.getScheduler().getProcessList();                    
+                    for (int i = 0; i < processList.getSize(); i++) {
+                        Process process = processList.get(i);
+                        if(process.getID() == this.currentProcess.getID()){
+                            processList.pop(i);
+                        }
+                    }
+                    
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CPU.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    this.semaphore.release();                    
+                }
+            }
             this.currentProcess = null;
+            this.IR = RUN_OS;
+        }
+    }
+    
+    
+    /***
+     * Bloquea un proceso por medio del SO
+     */
+    public void blockProcess(){        
+        try {
+            this.semaphore.acquire();
+            
+            this.currentProcess.setStatus(Process.BLOCKED);
+            OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
+            OS.getScheduler().getBlockedQueue().enqueue(this.currentProcess.getMemoryAdress());
+            this.currentProcess = null;
+            this.IR = RUN_OS;
+            
+            this.semaphore.release();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CPU.class.getName()).log(Level.SEVERE, null, ex);
+        } finally{
+            this.semaphore.release();            
+        }
+    }
+    
+    public void runIdleProcess(){
+        try {
+            this.semaphore.acquire();
+            
+            System.out.println(this + "   Corriendo proceso de espera");
+            
+            OperatingSystem OS = (OperatingSystem) this.mainMemory[0];            
+            if(!OS.getScheduler().getReadyQueue().isEmpty()){
+                this.IR = RUN_OS;
+            }
+            
+        } catch (InterruptedException ex) {
+            Logger.getLogger(CPU.class.getName()).log(Level.SEVERE, null, ex);
+        } finally{
+            this.semaphore.release();            
         }
     }
 
+    
     @Override
     public String toString() {
         return "CPU{" + "ID=" + ID + ", PC=" + PC + ", MAR=" + MAR + '}';

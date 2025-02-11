@@ -18,7 +18,7 @@ import javax.swing.Timer;
  * @author Juan
  */
 public class SettingsView extends javax.swing.JPanel {
-    private File filePath = new File("src\\Config\\config.txt");
+    private File filePath = new File("config.txt");
     /**
      * Creates new form settingsView
      */

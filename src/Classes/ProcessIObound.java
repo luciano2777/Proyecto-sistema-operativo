@@ -14,6 +14,7 @@ public class ProcessIObound extends Process{
     private int ticksForSuccess;
     private int ticksCountException = 0;
     private int ticksCountSatisfy = 0;
+    private boolean operationDone = false; 
        
     /***
      * Constructor 1
@@ -120,9 +121,19 @@ public class ProcessIObound extends Process{
         this.ticksCountSatisfy--;
     }
 
+    public boolean isOperationDone() {
+        return operationDone;
+    }
+
+    public void setOperationDone(boolean operationDone) {
+        this.operationDone = operationDone;
+    }
+    
+    
+
     @Override
     public String toString() {
-        return "ProcessIObound{" + "ticksCountException=" + ticksCountException + ", ticksForException=" + ticksForException + '}';
+        return "ProcessIObound{" + "Nombre=" + getName() + ", PC=" + getPC() + ", MAR=" + getMAR() + ", Status=" + getStatus() + ", ticksCountExc=" + ticksCountException + ", ticksForExc=" + ticksForException + ", numInstructions=" + getNumInstructions() + '}';
     }
     
     

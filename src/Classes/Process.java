@@ -17,7 +17,7 @@ public class Process extends MemoryEntity{
     private int status;
     private String name;
     private int PC;
-    private int MAR;
+    private int MAR;    
     private Integer memoryAdress;
     private int numInstructions;
     
@@ -79,7 +79,7 @@ public class Process extends MemoryEntity{
         this.ID = processCount;
         this.status = READY;
         this.name = name;
-        this.PC = 0;
+        this.PC = 1;
         this.MAR = 0;
         this.memoryAdress = memoryAdress;
         this.numInstructions = numInstructions;
