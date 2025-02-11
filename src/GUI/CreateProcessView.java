@@ -4,7 +4,13 @@
  */
 package GUI;
 
+import CPUScheduler.Job;
+import Classes.AdministrarArchivo;
 import java.awt.Color;
+import java.io.FileNotFoundException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
 
 /**
@@ -260,6 +266,44 @@ public static int NumInstructions =0;
     private void CreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateButtonActionPerformed
         // TODO add your handling code here:
         NumInstructions = Integer.parseInt(numInstructionsInput.getText()); //Se puede cambiar es para probar lo de generar una nueva tarea
+        
+        System.out.println("Iniciando");
+//        if(sourcePath.isEmpty()) //Meter el sourcepath
+//            JOptionPane.showMessageDialog(null, "ERROR: Please input the source of computation");
+        
+         System.out.println("Iniciando");
+//        if(sourcePath.isEmpty()) //Meter el sourcepath
+//            JOptionPane.showMessageDialog(null, "ERROR: Please input the source of computation");
+        
+         if(NumInstructions <= 0)
+            JOptionPane.showMessageDialog(null, "ERROR: Por favor introduzca la cantidad correcta de procesos");
+        else { //Aquí se ejecuta el codigo si todas las anteriores condiciones se cumplieron.
+        Job[] jobs = new Job[NumInstructions];       
+        String SelectedAlgo = "FCFS";
+        int a = AdministrarArchivo.countProgress("anything.csv");
+         System.out.println("Separador");
+            for(int i = 1; i <= NumInstructions; i++) {
+                String processID = "P"+(i +a);
+                long arrivalTime = (new java.util.Random().nextInt(9) + 1) * 300;
+                long burstTime = (new java.util.Random().nextInt(3) + 1) * 100;
+                long STRTTIME = System.nanoTime();
+                
+                Job newJob = new Job(processID, arrivalTime, burstTime, STRTTIME);
+                
+                jobs[(i-1)] = newJob;
+                System.out.println(jobs[(i-1)].getProcessID());
+            }
+            
+                    
+            try {
+                AdministrarArchivo.SaveProcess(jobs,"anything.csv");
+            } catch (FileNotFoundException ex) {
+                java.util.logging.Logger.getLogger(CreateProcessView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+            
+         }
+
+        
     }//GEN-LAST:event_CreateButtonActionPerformed
 
 
