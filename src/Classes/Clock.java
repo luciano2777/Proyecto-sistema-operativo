@@ -14,7 +14,7 @@ import java.util.concurrent.Semaphore;
  */
 public class Clock extends Thread{
     //Atributos
-    private int tick;
+    public static int tick;
     private int interval;      
     private int status;
     private List<ClockListener> clockListeners;

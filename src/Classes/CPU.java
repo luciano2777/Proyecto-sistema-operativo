@@ -153,10 +153,10 @@ public class CPU extends Thread implements ClockListener{
     //----------------procedimientos y Metodos---------------
     @Override
     public void onTick(int tick){
-        this.ticksCounter++;
+        this.ticksCounter++;      
         if(this.enabled && (this.ticksCounter == this.ticksPerInstruction)){            
-            if(this.operatingSystem != null){
-                System.out.println("CPU" + this.ID + " | Corrinedo SO");            
+            if(this.operatingSystem != null){                
+                System.out.println(this + "   Corrinedo SO");            
                 runOperativeSystem();
             }
             else if(this.currentProcess != null){
@@ -164,10 +164,11 @@ public class CPU extends Thread implements ClockListener{
                 runProcess();
             }
             if(this.currentProcess == null && this.operatingSystem == null){
-                runOperativeSystem();
+                System.out.println(this + "   Corrinedo SO");
+                runOperativeSystem();                
             }
             this.ticksCounter = 0;
-        }
+        }        
     }
     
     public void runOperativeSystem(){
@@ -176,7 +177,7 @@ public class CPU extends Thread implements ClockListener{
             
             OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
             this.operatingSystem = OS;
-            this.currentProcess = this.operatingSystem.assignNextProcess();
+            this.currentProcess = this.operatingSystem.assignNextProcess();            
             if(this.currentProcess != null){
                 this.PC = this.currentProcess.getPC();
                 this.MAR = this.currentProcess.getMAR();
@@ -193,8 +194,22 @@ public class CPU extends Thread implements ClockListener{
     }
     
     public void runProcess(){
-        if((this.MAR < this.currentProcess.getNumInstructions()) && !isInterrupted()){            
+        if((this.MAR < this.currentProcess.getNumInstructions()) && !isInterrupted()){ 
             this.currentProcess.setStatus(Process.RUNNING);
+            
+            //Si el procesos es I/O bound
+            if(this.currentProcess.getClass().getSimpleName().equals("ProcessIObound")){
+                ProcessIObound process = (ProcessIObound) this.currentProcess;
+                process.increaseTicksCountException();
+                
+                if(process.getTicksCountException() == process.getTicksForException()){
+                    this.operatingSystem = (OperatingSystem) this.mainMemory[0];
+                    this.operatingSystem.getSchealuder().getBlockedQueue().enqueue(process); //Proceso bloqueado
+                    this.currentProcess = null;
+                    return;
+                }              
+            }
+            
             this.PC = this.currentProcess.getPC();
             this.MAR = this.currentProcess.getMAR();
 

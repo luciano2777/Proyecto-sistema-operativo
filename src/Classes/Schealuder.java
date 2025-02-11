@@ -14,7 +14,7 @@ import DataStructures.Queue;
 public class Schealuder {
     private List<Process> processList;
     private Queue<Process> readyQueue;
-    private Queue<Process> blockedQueue;
+    private Queue<Process> blockedQueue;    
     private CPU[] CPUarray;
 
     public Schealuder(CPU[] CPUarray) {
@@ -62,6 +62,18 @@ public class Schealuder {
     public Process FIFO(){
         return readyQueue.dequeue();
     }
+    
+    public void InOutFIFO(){
+        if(this.blockedQueue.getFirst() != null){
+            ProcessIObound process = (ProcessIObound) this.blockedQueue.getFirst().getData();
+            process.increaseTicksCountSatisfy();
+            if(process.getTicksCountSatisfy() == process.getTicksForSuccess()){
+                this.readyQueue.enqueue(process);
+            }                                    
+        }
+    }
+
+
     
     
 }

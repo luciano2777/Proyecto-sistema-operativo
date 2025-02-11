@@ -15,7 +15,7 @@ public class Simulator {
     private CPU[] CPUarray;
     private MemoryEntity[] mainMemory;   
     private Clock clock;
-    private OperatingSystem operatingSystem;
+    private OperatingSystem operatingSystem;    
     
 
    /***
@@ -29,7 +29,7 @@ public class Simulator {
             this.CPUarray = new CPU[3];
             this.mainMemory = new MemoryEntity[1000];  
             this.clock = new Clock(interval);
-            this.operatingSystem = new OperatingSystem(CPUarray);
+            this.operatingSystem = new OperatingSystem(CPUarray);            
             
             for (int i = 0; i < 3; i++) {
                 CPU newCPU = new CPU(i, this.mainMemory, this.clock, ticksPerInstruction);
@@ -38,7 +38,8 @@ public class Simulator {
                 }
                 CPUarray[i] = newCPU;
                 this.clock.getClockListeners().append(newCPU);
-            }
+            }    
+            this.clock.getClockListeners().append(this.operatingSystem);
         }
         else{
             System.err.println("Error: Solo pueden haber entre 2 o 3 procesadores");
@@ -125,8 +126,17 @@ public class Simulator {
     }
     
     
-    public void createProcessCPUBound(String processName, int numInstructions, int memoryAdress){
+    public void createProcessCPUbound(String processName, int numInstructions, int memoryAdress){
         ProcessCPUbound process = this.operatingSystem.createProcessCPUbound(processName, numInstructions, memoryAdress);
+        mainMemory[process.getMemoryAdress()] = process;        
+    }
+    
+    
+    
+    public void createProcessIObound(String processName, int numInstructions, int memoryAdress,
+            int ticksToInterrupt, int ticksToSuccess){
+        ProcessIObound process = this.operatingSystem.createProcessIObound(processName, numInstructions, memoryAdress, 
+                ticksToInterrupt, ticksToSuccess);
         mainMemory[process.getMemoryAdress()] = process;        
     }
     

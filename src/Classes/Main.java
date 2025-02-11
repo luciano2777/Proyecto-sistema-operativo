@@ -20,12 +20,13 @@ public class Main {
     public static void main(String[] args) {
         //MainView mainView = new MainView();                        
         
-        Simulator sim = new Simulator(2, 1000, 3);
+        Simulator sim = new Simulator(2, 3000, 1);
         
-        sim.getOperatingSystem().createProcessCPUbound("P1", 6, 1);
-        sim.getOperatingSystem().createProcessCPUbound("P2", 6, 1);
-        sim.getOperatingSystem().createProcessCPUbound("P3", 6, 1);
-        sim.getOperatingSystem().createProcessCPUbound("P4", 6, 1);
+        sim.getOperatingSystem().createProcessIObound("P1", 6, 1, 2, 2);
+        sim.getOperatingSystem().createProcessCPUbound("P2", 6, 2);
+        sim.getOperatingSystem().createProcessCPUbound("P3", 6, 3);
+        sim.getOperatingSystem().createProcessCPUbound("P4", 6, 4);
+        sim.getOperatingSystem().createProcessCPUbound("P5", 6, 5);
         
         sim.startSimulation();
         

@@ -10,8 +10,10 @@ package Classes;
  */
 public class ProcessIObound extends Process{
     //Atributos
-    private int cyclesForException;
-    private int cyclesForSuccess;
+    private int ticksForException;
+    private int ticksForSuccess;
+    private int ticksCountException = 0;
+    private int ticksCountSatisfy = 0;
        
     /***
      * Constructor 1
@@ -20,12 +22,13 @@ public class ProcessIObound extends Process{
      * @param name
      * @param numInstructions
      * @param cyclesForException
-     * @param cyclesForSuccess 
+     * @param cyclesForSuccess
+
      */
     public ProcessIObound(String name, int numInstructions, int cyclesForException, int cyclesForSuccess) {
         super(name, numInstructions);
-        this.cyclesForException = cyclesForException;
-        this.cyclesForSuccess = cyclesForSuccess;
+        this.ticksForException = cyclesForException;
+        this.ticksForSuccess = cyclesForSuccess;
     }   
     
     
@@ -38,15 +41,16 @@ public class ProcessIObound extends Process{
      * @param numInstructions
      * @param PC
      * @param MAR
-     * @param cyclesForException
      * @param memoryAdress
-     * @param cyclesForSuccess 
+     * @param cyclesForException
+     * @param cyclesForSuccess
+
      */
     public ProcessIObound(String name, int numInstructions, int PC, int MAR, 
             int memoryAdress, int cyclesForException, int cyclesForSuccess) {
         super(name, numInstructions, PC, MAR, memoryAdress);
-        this.cyclesForException = cyclesForException;
-        this.cyclesForSuccess = cyclesForSuccess;
+        this.ticksForException = cyclesForException;
+        this.ticksForSuccess = cyclesForSuccess;
     }
     
     
@@ -57,31 +61,70 @@ public class ProcessIObound extends Process{
      * El ID se genera automaticamente
      * @param name
      * @param numInstructions
-     * @param cyclesForException
      * @param memoryAdress
-     * @param cyclesForSuccess 
+     * @param cyclesForException
+     * @param cyclesForSuccess
      */
     public ProcessIObound(String name, int numInstructions,  int memoryAdress, int cyclesForException, int cyclesForSuccess) {
         super(name, numInstructions, memoryAdress);
-        this.cyclesForException = cyclesForException;
-        this.cyclesForSuccess = cyclesForSuccess;
+        this.ticksForException = cyclesForException;
+        this.ticksForSuccess = cyclesForSuccess;
     }
 
-    public int getCyclesForException() {
-        return cyclesForException;
+    public int getTicksForException() {
+        return ticksForException;
     }
 
-    public void setCyclesForException(int cyclesForException) {
-        this.cyclesForException = cyclesForException;
+    public void setTicksForException(int ticksForException) {
+        this.ticksForException = ticksForException;
     }
 
-    public int getCyclesForSuccess() {
-        return cyclesForSuccess;
+    public int getTicksForSuccess() {
+        return ticksForSuccess;
     }
 
-    public void setCyclesForSuccess(int cyclesForSuccess) {
-        this.cyclesForSuccess = cyclesForSuccess;
+    public void setTicksForSuccess(int ticksForSuccess) {
+        this.ticksForSuccess = ticksForSuccess;
     }
+
+    public int getTicksCountException() {
+        return ticksCountException;
+    }
+
+    public void setTicksCountException(int ticksCountException) {
+        this.ticksCountException = ticksCountException;
+    }
+
+    public int getTicksCountSatisfy() {
+        return ticksCountSatisfy;
+    }
+
+    public void setTicksCountSatisfy(int ticksCountSatisfy) {
+        this.ticksCountSatisfy = ticksCountSatisfy;
+    }
+    
+    
+    public void increaseTicksCountException(){
+        this.ticksCountException++;
+    }
+    
+    public void decreaseTicksCountException(){
+        this.ticksCountException--;
+    }
+    
+    public void increaseTicksCountSatisfy(){
+        this.ticksCountSatisfy++; 
+    }
+    
+    public void decreaseTicksCountSatisfy(){
+        this.ticksCountSatisfy--;
+    }
+
+    @Override
+    public String toString() {
+        return "ProcessIObound{" + "ticksCountException=" + ticksCountException + ", ticksForException=" + ticksForException + '}';
+    }
+    
     
     
     

@@ -11,7 +11,7 @@ import DataStructures.Queue;
  *
  * @author Juan
  */
-public class OperatingSystem extends MemoryEntity{
+public class OperatingSystem extends MemoryEntity implements ClockListener{
     private Schealuder schealuder;    
     private int planningPolicy;
     private CPU[] CPUarray;
@@ -99,6 +99,17 @@ public class OperatingSystem extends MemoryEntity{
             default:
                 return null;
         }                                    
+    }
+    
+    
+
+    @Override
+    public void onTick(int tick) {
+        switch(this.planningPolicy){
+            case 0:
+                this.schealuder.InOutFIFO();            
+        }
+        //System.out.println(this.schealuder.getReadyQueue());
     }
     
 
