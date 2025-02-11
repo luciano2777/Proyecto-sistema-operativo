@@ -7,9 +7,13 @@ package GUI;
 
 import CPUScheduler.CalcSimulation;
 import CPUScheduler.Job;
+import Classes.AdministrarArchivo;
 import static GUI.CreateProcessView.NumInstructions;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -276,20 +280,29 @@ public class MainView extends javax.swing.JFrame {
          if(NumInstructions <= 0)
             JOptionPane.showMessageDialog(null, "ERROR: Por favor introduzca la cantidad correcta de procesos");
         else { //Aquí se ejecuta el codigo si todas las anteriores condiciones se cumplieron.
-            Job[] jobs = new Job[NumInstructions];       
-            String SelectedAlgo = "FCFS";
-            for(int i = 1; i <= NumInstructions; i++) {
-                String processID = "P"+i;
-                long arrivalTime = (new java.util.Random().nextInt(9) + 1) * 300;
-                long burstTime = (new java.util.Random().nextInt(3) + 1) * 100;
-                long STRTTIME = System.nanoTime();
-                
-                Job newJob = new Job(processID, arrivalTime, burstTime, STRTTIME);
-                jobs[(i-1)] = newJob;
-            }
-                CalcSimulation sim = new CalcSimulation(jobs, NumInstructions, "text", SelectedAlgo);
+        Job[] jobs = AdministrarArchivo.getJobsFromFile("anything.csv", 0);       
+        String SelectedAlgo = "FCFS";
+        NumInstructions = AdministrarArchivo.countProgress("anything.csv");
+         System.out.println("Separador");
+//            for(int i = 1 +a; i <= NumInstructions +a; i++) {
+//                String processID = "P"+i;
+//                long arrivalTime = (new java.util.Random().nextInt(9) + 1) * 300;
+//                long burstTime = (new java.util.Random().nextInt(3) + 1) * 100;
+//                long STRTTIME = System.nanoTime();
+//                
+//                Job newJob = new Job(processID, arrivalTime, burstTime, STRTTIME);
+//                jobs[(i-1)] = newJob;
+//                System.out.println(processID);
+//            }
+            
+            //Inicializar y ejecutar simulacion
+//             System.out.println("Empieza"  + (NumInstructions +a -1)+ jobs[(NumInstructions +a -1)].getProcessID() );
+                CalcSimulation sim = new CalcSimulation(jobs, NumInstructions , "text", SelectedAlgo); //Lo del sourcepath no hace nada.
             sim.start();
+            
             this.dispose();
+            
+
             
         }
     }//GEN-LAST:event_startButtonActionPerformed
