@@ -16,13 +16,13 @@ public class ejemplo extends javax.swing.JFrame {
     
     public ejemplo() {
         initComponents();
-        this.sim = new Simulator(2, 1000);        
+        this.sim = new Simulator(2, 1000, 1);        
         this.setVisible(true);
     }
     
     public ejemplo(int cpuEnabled, int interval){
         initComponents();
-        this.sim = new Simulator(cpuEnabled, interval);        
+        this.sim = new Simulator(cpuEnabled, interval, 1);        
         this.setVisible(true);
     }
     

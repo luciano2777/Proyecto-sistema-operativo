@@ -19,14 +19,22 @@ import javax.swing.JFileChooser;
  *
  * @author Juan
  */
-public class settingsView extends javax.swing.JPanel {
-    private File filePath = new File("src\\Config\\config.txt");
+public class SettingsView extends javax.swing.JPanel {
+    private File filePath = new File("config.txt");
     /**
      * Creates new form settingsView
      */
-    public settingsView() {
+    public SettingsView() {
         initComponents(); 
         saveMessage.setText("");
+    }
+    
+    public SettingsView(String interval, String numCpus, String ticksPerInstruction){
+        initComponents(); 
+        saveMessage.setText("");
+        intervalInput.setText(interval);
+        numCpusLabel.setText(numCpus);
+        ticksPerInstructionLabel.setText(ticksPerInstruction);
     }
 
     /**
@@ -44,7 +52,7 @@ public class settingsView extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        tickDurationInput = new javax.swing.JTextField();
+        intervalInput = new javax.swing.JTextField();
         numCpusLabel = new javax.swing.JLabel();
         numCPUplus = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -81,11 +89,11 @@ public class settingsView extends javax.swing.JPanel {
         });
         jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 330, -1, -1));
 
-        tickDurationInput.setBackground(new java.awt.Color(239, 239, 239));
-        tickDurationInput.setText("1000");
-        tickDurationInput.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        jPanel1.add(tickDurationInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 140, 60, -1));
-        tickDurationInput.addKeyListener(new java.awt.event.KeyAdapter() {
+        intervalInput.setBackground(new java.awt.Color(239, 239, 239));
+        intervalInput.setText("1000");
+        intervalInput.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        jPanel1.add(intervalInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 140, 60, -1));
+        intervalInput.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 char c = evt.getKeyChar();
                 if (!Character.isDigit(c)) { // Solo permite números
@@ -177,7 +185,7 @@ public class settingsView extends javax.swing.JPanel {
             fw = new FileWriter(filePath);
             BufferedWriter bw = new BufferedWriter(fw);
                         
-            String tickDuration = tickDurationInput.getText();            
+            String tickDuration = intervalInput.getText();            
             String tickPerInstruction = ticksPerInstructionLabel.getText();
             String numCpusEnabled = numCpusLabel.getText();
             
@@ -185,12 +193,12 @@ public class settingsView extends javax.swing.JPanel {
             bw.close(); 
             fw.close();
         } catch (IOException ex) {
-            Logger.getLogger(settingsView.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SettingsView.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 fw.close();
             } catch (IOException ex) {
-                Logger.getLogger(settingsView.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SettingsView.class.getName()).log(Level.SEVERE, null, ex);
             }
             saveMessage.setText("Cambios guardados exitosamente!");
             Timer timer = new Timer(3000, (ActionEvent e) -> {
@@ -226,6 +234,7 @@ public class settingsView extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField intervalInput;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -240,7 +249,6 @@ public class settingsView extends javax.swing.JPanel {
     private javax.swing.JLabel numCpusLabel;
     private javax.swing.JLabel saveMessage;
     private javax.swing.JLabel settingsLabel;
-    private javax.swing.JTextField tickDurationInput;
     private javax.swing.JLabel ticksPerInstructionLabel;
     private javax.swing.JPanel ticksPerInstructionMinus;
     private javax.swing.JPanel ticksPerInstructionPlus;

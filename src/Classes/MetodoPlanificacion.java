@@ -58,7 +58,8 @@ public class MetodoPlanificacion extends MemoryEntity {
         // Encontrar minimos
         for (int i = 0; i < tempList.getSize(); i++) {
             Process current = tempList.get(i);
-            if (current.getInstructions() < minProcess.getInstructions()) {
+//            if (current.getInstructions() < minProcess.getInstructions()) 
+            {
                 minProcess = current;
                 minIndex = i;
             }
@@ -72,7 +73,7 @@ public class MetodoPlanificacion extends MemoryEntity {
     System.out.println("\nProcesos ordenados:"); //Cambiar imprimir procesos ordenados a ejecutar procesos
     for (int i = 0; i < ListSRT.getSize(); i++) {
         Process p = ListSRT.get(i);
-        System.out.println(p.getName() + " (Instructions: " + p.getInstructions() + ")");
+        System.out.println(p.getName() + " (Instructions: "  + ")");
     }
 }
 

@@ -22,9 +22,10 @@ public class Process extends MemoryEntity{
     private int numInstructions;
     
     //Constantes
-    private static final int RUNNING = 0;
-    private static final int BLOCKED = 1;
-    private static final int READY = 2;
+    public static final int RUNNING = 0;
+    public static final int BLOCKED = 1;
+    public static final int READY = 2;
+    public static final int TERMINATED = 3;
     
     /***
      * Constructor 1
@@ -37,7 +38,7 @@ public class Process extends MemoryEntity{
         this.ID = processCount;
         this.status = READY;
         this.name = name;
-        this.PC = 0;
+        this.PC = 1;
         this.MAR = 0;
         this.memoryAdress = null;
         this.numInstructions = numInstructions;
@@ -122,15 +123,32 @@ public class Process extends MemoryEntity{
         this.MAR = MAR;
     }
     
-    public int getInstructions() {
+    public int getNumInstructions() {
         return numInstructions;
     }
 
-    public void setInstructions(int MAR) {
-        this.MAR = numInstructions;
+    public void setNumInstructions(int numInstructions) {
+        this.numInstructions = numInstructions;
     }
     
+    public Integer getMemoryAdress() {
+        return memoryAdress;
+    }
+
+    public void setMemoryAdress(Integer memoryAdress) {
+        this.memoryAdress = memoryAdress;
+    }
+    
+    
+    
     //-------------------Procedimientos y Metodos-----------------------
+
+    @Override
+    public String toString() {
+        return "Process{" + "ID=" + ID + ", status=" + status + ", name=" + name + ", PC=" + PC + ", MAR=" + MAR + ", memoryAdress=" + memoryAdress + ", numInstructions=" + numInstructions + '}';
+    }
+
+
     
     
     

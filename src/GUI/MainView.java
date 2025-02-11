@@ -5,12 +5,18 @@
  */
 package GUI;
 
+import Classes.Simulator;
 import CPUScheduler.CalcSimulation;
 import CPUScheduler.Job;
 import Classes.AdministrarArchivo;
 import static GUI.CreateProcessView.NumInstructions;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,28 +29,67 @@ import javax.swing.JOptionPane;
  */
 public class MainView extends javax.swing.JFrame {
     private int xMouse;
-    private int yMouse;
-    private final SimulationView simulationView = new SimulationView();
-    private final CreateProcessView createProcessView = new CreateProcessView();
-    private final settingsView settingsView = new settingsView();
+    private int yMouse;    
+    private Simulator simulator;
+    
+    
     /**
      * Creates new form MainView
      */
     public MainView() {
         initComponents();
+        initView();
+        loadSettings();
+        this.simulator = new Simulator(2, 1000, 1);
+        
         this.setVisible(true);
+        
+    }
+    
+    
+    private String[] loadSettings(){
+        File filePath = new File("config.txt");
+        
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new FileReader(filePath));
+            try {
+                String settings = "";
+                String line = bufferedReader.readLine();
+                while (line != null) {                    
+                    settings = line;
+                    line = bufferedReader.readLine();
+                }
+                return settings.split("-");
+            } catch (IOException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                bufferedReader.close();
+            } catch (IOException ex) {
+                Logger.getLogger(MainView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+        
+    
+    
+    private void initView(){
         buttonGroup.add(createProcessButton);
         buttonGroup.add(settingsButton);
         buttonGroup.add(SimulationButton);
         
+        SimulationButton.setSelected(true);
+        
+        SimulationView simulationView = new SimulationView();  
         simulationView.setSize(660, 420);
         simulationView.setLocation(0, 0);
-        settingsView.setSize(660, 420);
-        settingsView.setLocation(0, 0);
-        createProcessView.setSize(660, 420);
-        createProcessView.setLocation(0, 0);
-        
-        SimulationButton.setSelected(true);
+        bodyPanel.removeAll();        
         bodyPanel.add(simulationView, BorderLayout.CENTER);
         bodyPanel.revalidate();
         bodyPanel.repaint();
@@ -242,6 +287,7 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_topPanelMouseDragged
 
     private void createProcessButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createProcessButtonActionPerformed
+        CreateProcessView createProcessView = new CreateProcessView();
         createProcessView.setSize(660, 420);
         createProcessView.setLocation(0, 0);
         
@@ -252,6 +298,8 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_createProcessButtonActionPerformed
 
     private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
+        String[] settings = loadSettings();
+        SettingsView settingsView = new SettingsView(settings[0], settings[1], settings[2]);
         settingsView.setSize(660, 420);
         settingsView.setLocation(0, 0);
         
@@ -262,6 +310,7 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_settingsButtonActionPerformed
 
     private void SimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SimulationButtonActionPerformed
+        SimulationView simulationView = new SimulationView();
         simulationView.setSize(660, 420);
         simulationView.setLocation(0, 0);
         
