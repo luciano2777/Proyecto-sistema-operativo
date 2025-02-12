@@ -12,25 +12,25 @@ import GUI.ejemplo;
  *
  * @author Juan
  */
-public class OperatingSystem extends MemoryEntity implements ClockListener{
+public class OperatingSystem extends MemoryEntity {
     private Scheduler schealuder;    
     private int planningPolicy;
     private CPU[] CPUarray;
     private MemoryEntity[] mainMemory;
     
-    private final static int FIFO = 0;
-    private final static int FCFS = 1;
-    private final static int roundRobin = 2;
-    private final static int SPN = 3;
-    private final static int SRT = 4;
-    private final static int HRRN = 5;
-    private final static int feeback = 6;
+    public final static int FIFO = 0;
+    public final static int FCFS = 1;
+    public final static int roundRobin = 2;
+    public final static int SPN = 3;
+    public final static int SRT = 4;
+    public final static int HRRN = 5;
+    public final static int feeback = 6;
     
     
 
     public OperatingSystem(CPU[] CPUarray, MemoryEntity[] mainMemory) {    
         this.schealuder = new Scheduler(CPUarray, mainMemory);  
-        this.planningPolicy = 0;
+        this.planningPolicy = FIFO;
         this.CPUarray = CPUarray;
         this.mainMemory = mainMemory;
     }
@@ -83,36 +83,53 @@ public class OperatingSystem extends MemoryEntity implements ClockListener{
     }
         
     
-    public Integer assignNextProcess(){                    
+    public Process assignNextProcess(){                    
         switch(this.planningPolicy){
-            case 0:                  
-                return this.schealuder.FIFO();
-            default:
-                return null;
-        }                                    
-    }   
-    
-    
-    
-
-    @Override
-    public void onTick(int tick) {
-        switch(this.planningPolicy){
-            case 0 -> this.schealuder.InOutFIFO();            
-        }
-        System.out.println("");
-        
-        boolean finished = true;
-        for(CPU cpu: CPUarray){
-            if(cpu.isEnabled()){
-                finished = false;
-            }
-        }
-        
-        if(finished){
             
-        }
+            case FIFO -> {                                  
+                Integer memoryAdress = this.schealuder.FIFO();
+                if(memoryAdress == null || memoryAdress == 0){
+                    return null;
+                }
+                Process process = (Process) this.mainMemory[memoryAdress];
+                return process;
+            }
+            
+            case roundRobin -> {
+                Integer memoryAdress = this.schealuder.RoundRobin();
+                if(memoryAdress == null || memoryAdress == 0){
+                    return null;
+                }
+                Process process = (Process) this.mainMemory[memoryAdress];
+                return process;
+            }
+            
+            case SPN -> {
+                Integer memoryAdress = this.schealuder.SPN();
+                if(memoryAdress == null || memoryAdress == 0){
+                    return null;
+                }
+                Process process = (Process) this.mainMemory[memoryAdress];
+                return process;
+            }
+            
+            default -> {
+                return null;
+            }
+        }                                    
+    }  
+    
+    public void enqueueInReadyQueue(Integer memoryAdress){
+        this.schealuder.getReadyQueue().enqueue(memoryAdress);
     }
+    
+    public void enqueueInBlockedQueue(Integer memoryAdress){
+        this.schealuder.getBlockedQueue().enqueue(memoryAdress);
+    }
+    
+    
+    
+   
     
 
     

@@ -89,20 +89,35 @@ public class Scheduler {
         else{
             return memoryAdress;
         }
-    }
+    }    
     
-    public void InOutFIFO(){
-        if(this.blockedQueue.getFirst() != null){
-            Integer processMemoryAdress = (Integer) this.blockedQueue.getFirst().getData();            
-            ProcessIObound process = (ProcessIObound) this.mainMemory[processMemoryAdress];
-            process.increaseTicksCountSatisfy();
-            if(process.getTicksCountSatisfy() == process.getTicksForSuccess()){
-                process.setOperationDone(true);
-                this.blockedQueue.dequeue();
-                this.readyQueue.enqueue(processMemoryAdress);
-            }
+    
+    public Integer RoundRobin(){
+        Integer memoryAdress = readyQueue.dequeue();        
+        
+        //No hay procesos en la cola de listos pero si hay en la cola de bloqueados
+        if(memoryAdress == null && !this.blockedQueue.isEmpty()){ 
+            return 0;
+        }
+        else{
+            return memoryAdress;
         }
     }
+    
+    
+    public Integer SPN(){
+        this.readyQueue = readyQueue.sortShortestProcessQueue(this.mainMemory);           
+        Integer memoryAdress = readyQueue.dequeue();
+        
+        //No hay procesos en la cola de listos pero si hay en la cola de bloqueados
+        if(memoryAdress == null && !this.blockedQueue.isEmpty()){ 
+            return 0;
+        }
+        else{
+            return memoryAdress;
+        }                
+    }
+
 
 
     

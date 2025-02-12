@@ -12,9 +12,7 @@ public class ProcessIObound extends Process{
     //Atributos
     private int ticksForException;
     private int ticksForSuccess;
-    private int ticksCountException = 0;
-    private int ticksCountSatisfy = 0;
-    private boolean operationDone = false; 
+    private int ticksCountException = 0;        
        
     /***
      * Constructor 1
@@ -94,16 +92,7 @@ public class ProcessIObound extends Process{
 
     public void setTicksCountException(int ticksCountException) {
         this.ticksCountException = ticksCountException;
-    }
-
-    public int getTicksCountSatisfy() {
-        return ticksCountSatisfy;
-    }
-
-    public void setTicksCountSatisfy(int ticksCountSatisfy) {
-        this.ticksCountSatisfy = ticksCountSatisfy;
-    }
-    
+    }  
     
     public void increaseTicksCountException(){
         this.ticksCountException++;
@@ -113,27 +102,11 @@ public class ProcessIObound extends Process{
         this.ticksCountException--;
     }
     
-    public void increaseTicksCountSatisfy(){
-        this.ticksCountSatisfy++; 
-    }
-    
-    public void decreaseTicksCountSatisfy(){
-        this.ticksCountSatisfy--;
-    }
-
-    public boolean isOperationDone() {
-        return operationDone;
-    }
-
-    public void setOperationDone(boolean operationDone) {
-        this.operationDone = operationDone;
-    }
-    
     
 
     @Override
     public String toString() {
-        return "ProcessIObound{" + "Nombre=" + getName() + ", PC=" + getPC() + ", MAR=" + getMAR() + ", Status=" + getStatus() + ", ticksCountExc=" + ticksCountException + ", ticksForExc=" + ticksForException + ", numInstructions=" + getNumInstructions() + '}';
+        return "ProcessIObound{ " + "Nombre=" + getName() + ", MAR=" + getMAR() + ", numInstructions=" + getNumInstructions() + ", ticksCountExc=" + ticksCountException + ", ticksForExc=" + ticksForException + ", ticksRestantes=" + getRemainingTime() + " }";
     }
     
     

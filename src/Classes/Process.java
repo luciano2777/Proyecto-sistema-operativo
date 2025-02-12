@@ -18,7 +18,9 @@ public class Process extends MemoryEntity{
     private String name;
     private int PC;
     private int MAR;    
+    private Integer assignedCPU;
     private Integer memoryAdress;
+    private int remainingTime;
     private int numInstructions;
     
     //Constantes
@@ -40,7 +42,9 @@ public class Process extends MemoryEntity{
         this.name = name;
         this.PC = 1;
         this.MAR = 0;
+        this.assignedCPU = null;
         this.memoryAdress = null;
+        this.remainingTime = 5;
         this.numInstructions = numInstructions;
         processCount++;
     }
@@ -61,7 +65,9 @@ public class Process extends MemoryEntity{
         this.name = name;
         this.PC = PC;
         this.MAR = MAR;
+        this.assignedCPU = null;
         this.memoryAdress = memoryAdress;
+        this.remainingTime = 5;
         this.numInstructions = numInstructions;
         processCount++;
     }
@@ -81,7 +87,9 @@ public class Process extends MemoryEntity{
         this.name = name;
         this.PC = 1;
         this.MAR = 0;
+        this.assignedCPU = null;
         this.memoryAdress = memoryAdress;
+        this.remainingTime = 5;
         this.numInstructions = numInstructions;
         processCount++;
     }
@@ -138,14 +146,33 @@ public class Process extends MemoryEntity{
     public void setMemoryAdress(Integer memoryAdress) {
         this.memoryAdress = memoryAdress;
     }
+
+    public Integer getAssignedCPU() {
+        return assignedCPU;
+    }
+
+    public void setAssignedCPU(Integer assignedCPU) {
+        this.assignedCPU = assignedCPU;
+    }
+
+    public int getRemainingTime() {
+        return remainingTime;
+    }
+
+    public void setRemainingTime(int remainingTime) {
+        this.remainingTime = remainingTime;
+    }
     
+    public void decreaseRemainingTime(){
+        this.remainingTime -= 1;
+    }
     
     
     //-------------------Procedimientos y Metodos-----------------------
 
     @Override
     public String toString() {
-        return "Process{" + "ID=" + ID + ", status=" + status + ", name=" + name + ", PC=" + PC + ", MAR=" + MAR + ", memoryAdress=" + memoryAdress + ", numInstructions=" + numInstructions + '}';
+        return "Process{ name=" + name + ", status=" + status + ", MAR=" + MAR + ", numInstructions=" + numInstructions + ", ticksRestantes=" + getRemainingTime() + " }";
     }
 
 

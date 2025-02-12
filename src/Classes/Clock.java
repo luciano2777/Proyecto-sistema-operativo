@@ -15,7 +15,7 @@ import java.util.concurrent.Semaphore;
 public class Clock extends Thread{
     //Atributos
     public static int tick;
-    private int interval;      
+    public static int interval;      
     private int status;
     private List<ClockListener> clockListeners;
     private Semaphore semaphore;
@@ -26,7 +26,7 @@ public class Clock extends Thread{
 
     /***
      * Contructor: Crea un reloj encargado de sincronizar los procesadores donde 
-     * tick representa el tiempo de ejecucion, interval la duracion en ms del tick
+     * tick representa la unidad de tiempo de ejecucion, interval la duracion en ms del tick
      * y running el estado del reloj.
      * @param interval              
      */
@@ -36,25 +36,26 @@ public class Clock extends Thread{
         this.status = RUNNING;
         this.clockListeners = new List();
         this.semaphore = new Semaphore(1);
-
-    }        
+    }  
+    
     
     //------------------------Getters y Setters----------------------
-    public int getTick() {
+
+    public static int getTick() {
         return tick;
     }
 
-    public void setTick(int tick) {
-        this.tick = tick;
+    public static void setTick(int tick) {
+        Clock.tick = tick;
     }
 
-    public int getInterval() {
+    public static int getInterval() {
         return interval;
     }
 
-    public void setInterval(int interval) {
-        this.interval = interval;
-    }
+    public static void setInterval(int interval) {
+        Clock.interval = interval;
+    }        
 
     public int getStatus() {
         return status;
@@ -67,7 +68,8 @@ public class Clock extends Thread{
                 semaphore.release();
             }
         }
-    }
+    }  
+    
 
     public List<ClockListener> getClockListeners() {
         return clockListeners;
@@ -103,7 +105,7 @@ public class Clock extends Thread{
     public void notifyListeners(){
         for (int i = 0; i < this.clockListeners.getSize(); i++) {
             ClockListener listener = this.clockListeners.get(i);
-            listener.onTick(this.tick);
+            listener.onTick(this.tick);            
         }
     }
     
@@ -126,7 +128,8 @@ public class Clock extends Thread{
     public void run() {
     while (this.status != FINISHED) {
         if (this.status == RUNNING) {
-            tick();                
+            tick();     
+            System.out.println("");
         } else if (this.status == PAUSED) {
             try {
                 // El hilo espera a que el semáforo se libere para continuar ejecutando

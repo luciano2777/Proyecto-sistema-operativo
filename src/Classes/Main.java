@@ -21,17 +21,19 @@ public class Main {
     public static void main(String[] args) {
         //MainView mainView = new MainView();                        
         
-        Simulator sim = new Simulator(2, 300, 1);
+        Simulator sim = new Simulator(2, 2000, 1);
+        sim.setPlanningPolicy(OperatingSystem.SPN);
         
-        sim.createProcessIObound("P0", 6, 1, 2, 2);
-        sim.createProcessIObound("P1", 6, 2, 2, 2);
-        sim.createProcessCPUbound("P2", 6, 3);
-        sim.createProcessCPUbound("P3", 6, 4);
-        sim.createProcessCPUbound("P4", 6, 5);
-        sim.createProcessCPUbound("P5", 6, 6);
+        sim.createProcessIObound("P0", 3, 1, 2, 2);
+        sim.createProcessIObound("P1", 4, 2, 2, 2);
+        sim.createProcessCPUbound("P2", 5, 3);
+        sim.createProcessCPUbound("P3", 4, 4);
+        sim.createProcessCPUbound("P4", 3, 5);
+        sim.createProcessCPUbound("P5", 4, 6);
         sim.createProcessIObound("P6", 6, 7, 2, 2);
-                
-        System.out.println(sim.getOperatingSystem().getScheduler().getReadyQueue());
+                   
+        
+        //System.out.println(sim.getOperatingSystem().getScheduler().getReadyQueue());
        
         
         sim.startSimulation();

@@ -23,7 +23,7 @@ public class CPU extends Thread implements ClockListener{
     private Clock clock;
     private Semaphore semaphore;   
     private Process currentProcess;
-    private OperatingSystem operatingSystem;
+    private Integer currentPlanningPolicy;    
     private int ticksPerInstruction;
     private int ticksCounter = 0;
     
@@ -49,7 +49,7 @@ public class CPU extends Thread implements ClockListener{
         this.clock = clock;
         this.semaphore = new Semaphore(1);
         this.currentProcess = null;
-        this.operatingSystem = null;
+        this.currentPlanningPolicy = null;        
         this.ticksPerInstruction = ticksPerInstruction;
     }
     
@@ -71,8 +71,8 @@ public class CPU extends Thread implements ClockListener{
         this.mainMemory = mainMemory;
         this.clock = clock;
         this.semaphore = new Semaphore(1);
-        this.currentProcess = null;
-        this.operatingSystem = null;
+        this.currentProcess = null;  
+        this.currentPlanningPolicy = null;
         this.ticksPerInstruction = ticksPerInstruction;
     }
     
@@ -129,14 +129,6 @@ public class CPU extends Thread implements ClockListener{
         this.currentProcess = currentProcess;
     }       
 
-    public OperatingSystem getOperativeSystem() {
-        return operatingSystem;
-    }
-
-    public void setOperativeSystem(OperatingSystem operativeSystem) {
-        this.operatingSystem = operativeSystem;
-    }
-
     public int getTicksPerInstruction() {
         return ticksPerInstruction;
     }
@@ -161,13 +153,6 @@ public class CPU extends Thread implements ClockListener{
         this.IR = IR;
     }
 
-    public OperatingSystem getOperatingSystem() {
-        return operatingSystem;
-    }
-
-    public void setOperatingSystem(OperatingSystem operatingSystem) {
-        this.operatingSystem = operatingSystem;
-    }
 
     
     
@@ -176,7 +161,7 @@ public class CPU extends Thread implements ClockListener{
     //----------------procedimientos y Metodos---------------
     @Override
     public void onTick(int tick){
-        if(this.enabled){
+        if(this.enabled){            
             this.ticksCounter++;       
             
             if(this.ticksCounter == this.ticksPerInstruction){                           
@@ -189,10 +174,6 @@ public class CPU extends Thread implements ClockListener{
                     case RUN_PROCESS -> {            
                         System.out.println(this + "   " + this.currentProcess);
                         runProcess();                    
-                    }
-                    case BLOCK_PROCESS -> {
-                        System.out.println(this + "   Bloqueando " + this.currentProcess);
-                        blockProcess();                    
                     }
                     case RUN_IDLE_PROCESS -> {
                         runIdleProcess();
@@ -213,35 +194,20 @@ public class CPU extends Thread implements ClockListener{
             
             //Carga SO
             OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
+            this.currentPlanningPolicy = OS.getPlanningPolicy();
             
             //Elige el siguiente proceso segun la planificacion
-            Integer memoryAdress = OS.assignNextProcess();
-            
-            if(memoryAdress == null){
-                System.out.println(" -> Simulacion Finalizada");
-                this.enabled = false;
+            this.currentProcess = OS.assignNextProcess();            
+            if(this.currentProcess == null){
+                this.IR = RUN_IDLE_PROCESS;                
                 return;
-            }
+            }            
             
-            //Si la direccion es 0 (SO) ejecuta el proceso de espera
-            if(memoryAdress == 0){
-                this.IR = RUN_IDLE_PROCESS;
-                return;
-            }
-                        
-            this.currentProcess = (Process) this.mainMemory[memoryAdress];             
-            if(this.currentProcess != null){                    
-                //Carga el contexto del PCB y lo pone en estado de ready
-                this.PC = this.currentProcess.getPC();
-                this.MAR = this.currentProcess.getMAR();       
-                this.currentProcess.setStatus(Process.RUNNING);
-                this.IR = RUN_PROCESS;
-            }
-            else{
-                //Si no hay mas procesos detener la ejecucion
-                this.clock.stopClock();
-            }                
-            
+            //Carga el contexto del PCB y lo pone en estado de ready
+            this.PC = this.currentProcess.getPC();
+            this.MAR = this.currentProcess.getMAR();       
+            this.currentProcess.setStatus(Process.RUNNING);
+            this.IR = RUN_PROCESS;                                       
             
         } catch (InterruptedException ex) {
             Logger.getLogger(CPU.class.getName()).log(Level.SEVERE, null, ex);
@@ -256,19 +222,35 @@ public class CPU extends Thread implements ClockListener{
      */
     public void runProcess(){  
         //Si el proceso no ha terminado y no ha sido interrumpido -> seguir ejecutando
-        if((this.MAR < this.currentProcess.getNumInstructions()) && !isInterrupted() && (this.currentProcess.getStatus() == Process.RUNNING)){             
+        boolean processEnded = this.MAR < this.currentProcess.getNumInstructions();
+        boolean processRunningStatus = this.currentProcess.getStatus() == Process.RUNNING;
+        boolean isCPUasigned = this.currentProcess.getAssignedCPU() == this.ID;
+        
+        if(processEnded && processRunningStatus && isCPUasigned){             
+            
+            //Si la planificacion es RR verificar el quantum de tiempo
+            if(this.currentPlanningPolicy == OperatingSystem.roundRobin){                
+                if(this.currentProcess.getRemainingTime() == 0){
+                    this.currentProcess.setRemainingTime(5);
+                    OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
+                    OS.enqueueInReadyQueue(this.currentProcess.getMemoryAdress());
+                    this.currentProcess = null;
+                    this.IR = RUN_OS;
+                    return;
+                }
+                this.currentProcess.decreaseRemainingTime();
+            }
             
             //Si el procesos es I/O bound
             if(this.currentProcess.getClass().getSimpleName().equals("ProcessIObound")){
                 ProcessIObound process = (ProcessIObound) this.currentProcess;
                 
-                if(!process.isOperationDone()){
-                    if(process.getTicksCountException() == process.getTicksForException()){                    
-                        this.IR = BLOCK_PROCESS; //Bloquear proceso
-                        return;
-                    }              
-                    process.increaseTicksCountException();                    
-                }
+                if(process.getTicksCountException() == process.getTicksForException()){                    
+                    this.IR = BLOCK_PROCESS; //Bloquear proceso
+                    blockProcess();
+                    return;
+                }              
+                process.increaseTicksCountException();                                    
             }
                         
             this.PC = this.currentProcess.getPC();
@@ -319,8 +301,12 @@ public class CPU extends Thread implements ClockListener{
             this.semaphore.acquire();
             
             this.currentProcess.setStatus(Process.BLOCKED);
-            OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
-            OS.getScheduler().getBlockedQueue().enqueue(this.currentProcess.getMemoryAdress());
+            OperatingSystem OS = (OperatingSystem) this.mainMemory[0];            
+            OS.getScheduler().getBlockedQueue().enqueue(this.currentProcess.getMemoryAdress()); //Bloquea el proceso
+            
+            IOHandlerThread thread = new IOHandlerThread((ProcessIObound) this.currentProcess, this.mainMemory);
+            thread.start(); //Hilo para el manejo de la excepcion
+            
             this.currentProcess = null;
             this.IR = RUN_OS;
             

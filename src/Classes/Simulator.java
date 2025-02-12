@@ -38,8 +38,7 @@ public class Simulator {
                 }
                 CPUarray[i] = newCPU;
                 this.clock.getClockListeners().append(newCPU);
-            }    
-            this.clock.getClockListeners().append(this.operatingSystem);
+            }                
         }
         else{
             System.err.println("Error: Solo pueden haber entre 2 o 3 procesadores");
@@ -72,6 +71,9 @@ public class Simulator {
         this.operatingSystem = operatingSystem;
     }                
     
+    public void setPlanningPolicy(int planningPolicy){
+        this.operatingSystem.setPlanningPolicy(planningPolicy);
+    }
     
     //--------------------Procedimientos y Metodos----------------------
     
