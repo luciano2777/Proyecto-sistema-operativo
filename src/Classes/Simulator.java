@@ -23,6 +23,7 @@ public class Simulator {
     * en el parametro numCPUenable, solo puede haber un minimo de 2 habilitados y un maximo de 3.
     * @param numCPUenable 
     * @param interval 
+     * @param ticksPerInstruction 
     */
     public Simulator(int numCPUenable, int interval, int ticksPerInstruction) {
         if(numCPUenable == 2 || numCPUenable == 3){
@@ -38,7 +39,8 @@ public class Simulator {
                 }
                 CPUarray[i] = newCPU;
                 this.clock.getClockListeners().append(newCPU);
-            }                
+            }               
+            this.clock.getClockListeners().append(this.operatingSystem.getScheduler());
         }
         else{
             System.err.println("Error: Solo pueden haber entre 2 o 3 procesadores");

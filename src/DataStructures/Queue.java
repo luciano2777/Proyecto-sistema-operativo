@@ -119,7 +119,7 @@ public class Queue<T> {
         return queue;
     }
     
-    public Integer dequeueProcessByIdx(int idx, MemoryEntity[] mainMemory){
+    public Integer dequeueProcessByIndex(int idx, MemoryEntity[] mainMemory){
         Integer memoryAdress = null;
         if(!isEmpty()){
             if(idx == 0){
@@ -139,7 +139,7 @@ public class Queue<T> {
     }
         
     
-    public Integer getShortestProcessIDX(MemoryEntity[] mainMemory){
+    public Integer shortestProcessIndexSPN(MemoryEntity[] mainMemory){
         Integer idx = 0;
         if(!isEmpty()){
             Node pointer = this.first;
@@ -158,50 +158,90 @@ public class Queue<T> {
         return idx;
     }
     
-    public Queue sortShortestProcessQueue(MemoryEntity[] mainMemory){
+    public Queue sortShortestProcessQueueSPN(MemoryEntity[] mainMemory){
         Queue<Integer> sortedQueue = new Queue();
         
         while(!isEmpty()){
-            Integer idx = getShortestProcessIDX(mainMemory);
-            sortedQueue.enqueue(dequeueProcessByIdx(idx, mainMemory));
+            Integer idx = shortestProcessIndexSRT(mainMemory);
+            sortedQueue.enqueue(dequeueProcessByIndex(idx, mainMemory));
+        }
+        
+        return sortedQueue;
+    }    
+        
+    
+    public Integer shortestProcessIndexSRT(MemoryEntity[] mainMemory){
+        Integer idx = 0;
+        if(!isEmpty()){
+            Node pointer = this.first;
+            Process firstProcess = ((Process) mainMemory[((Integer) this.first.getData())]);
+            
+            int min = firstProcess.getNumInstructions() - firstProcess.getMAR();
+            for (int i = 0; i < this.size; i++) {
+                Integer memoryAdress = (Integer) pointer.getData();
+                Process process = (Process) mainMemory[memoryAdress];
+
+                if((process.getNumInstructions() - process.getMAR()) < min){
+                    min = (process.getNumInstructions() - process.getMAR());
+                    idx = i;
+                }
+                pointer = pointer.getNext();
+            }            
+        }
+        return idx;
+    }
+    
+    
+    
+    
+    
+    
+    public Queue sortShortestProcessQueueSRT(MemoryEntity[] mainMemory){
+        Queue<Integer> sortedQueue = new Queue();
+        
+        while(!isEmpty()){
+            Integer idx = shortestProcessIndexSPN(mainMemory);
+            sortedQueue.enqueue(dequeueProcessByIndex(idx, mainMemory));
         }
         
         return sortedQueue;
     }
     
     
-    public void enqueueShortestProcess(Integer memoryAdress, MemoryEntity[] mainMemory){
-        Node newNode = new Node(memoryAdress);
-        if(isEmpty()){
-            enqueue((T) memoryAdress);
-            return;
-        }    
+    public Integer shortestProcessIndexHRRN(MemoryEntity[] mainMemory){
+        Integer idx = 0;
+        if(!isEmpty()){
+            Node pointer = this.first;
+            Process firstProcess = ((Process) mainMemory[((Integer) this.first.getData())]);
+            
+            int min = (firstProcess.getTimeInQueue() + firstProcess.getNumInstructions())/firstProcess.getNumInstructions();
+            for (int i = 0; i < this.size; i++) {
+                Integer memoryAdress = (Integer) pointer.getData();
+                Process process = (Process) mainMemory[memoryAdress];
+
+                if((process.getNumInstructions() - process.getMAR()) < min){
+                    min = (process.getTimeInQueue() + process.getNumInstructions())/process.getNumInstructions();
+                    idx = i;
+                }
+                pointer = pointer.getNext();
+            }            
+        }
+        return idx;
+    }
+    
+    public Queue sortShortestProcessQueueHRRN(MemoryEntity[] mainMemory){
+        Queue<Integer> sortedQueue = new Queue();
         
-        Process currentProcess = (Process) mainMemory[memoryAdress];
-        Process firstProcess = (Process) mainMemory[(Integer) this.first.getData()];
-        if(currentProcess.getNumInstructions() < firstProcess.getNumInstructions()){
-            newNode.setNext(this.first);
-            this.first = newNode;
-            this.size++;
-            return;
+        while(!isEmpty()){
+            Integer idx = shortestProcessIndexHRRN(mainMemory);
+            sortedQueue.enqueue(dequeueProcessByIndex(idx, mainMemory));
         }
         
-        Node pointer = this.first;
-        for (int i = 0; i < this.size-1; i++) {
-            if(pointer.getNext() == null){
-                enqueue((T) memoryAdress);
-                break;
-            }
-            
-            Process process = (Process) mainMemory[(Integer) pointer.getNext().getData()];
-            if(currentProcess.getNumInstructions() < process.getNumInstructions()){
-                newNode.setNext(pointer.getNext());
-                pointer.setNext(newNode);
-                this.size++;
-                break;
-            }
-        }       
+        return sortedQueue;
     }
+    
+    
+    
     
   
     

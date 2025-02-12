@@ -18,19 +18,18 @@ public class OperatingSystem extends MemoryEntity {
     private CPU[] CPUarray;
     private MemoryEntity[] mainMemory;
     
-    public final static int FIFO = 0;
-    public final static int FCFS = 1;
-    public final static int roundRobin = 2;
-    public final static int SPN = 3;
-    public final static int SRT = 4;
-    public final static int HRRN = 5;
-    public final static int feeback = 6;
+    public final static int FCFS = 0;    
+    public final static int roundRobin = 1;
+    public final static int SPN = 2;
+    public final static int SRT = 3;
+    public final static int HRRN = 4;
+    public final static int feeback = 5;
     
     
 
     public OperatingSystem(CPU[] CPUarray, MemoryEntity[] mainMemory) {    
         this.schealuder = new Scheduler(CPUarray, mainMemory);  
-        this.planningPolicy = FIFO;
+        this.planningPolicy = FCFS;
         this.CPUarray = CPUarray;
         this.mainMemory = mainMemory;
     }
@@ -84,9 +83,8 @@ public class OperatingSystem extends MemoryEntity {
         
     
     public Process assignNextProcess(){                    
-        switch(this.planningPolicy){
-            
-            case FIFO -> {                                  
+        switch(this.planningPolicy){            
+            case FCFS -> {                                  
                 Integer memoryAdress = this.schealuder.FIFO();
                 if(memoryAdress == null || memoryAdress == 0){
                     return null;
@@ -106,6 +104,24 @@ public class OperatingSystem extends MemoryEntity {
             
             case SPN -> {
                 Integer memoryAdress = this.schealuder.SPN();
+                if(memoryAdress == null || memoryAdress == 0){
+                    return null;
+                }
+                Process process = (Process) this.mainMemory[memoryAdress];
+                return process;
+            }
+            
+            case SRT -> {
+                Integer memoryAdress = this.schealuder.SRT();
+                if(memoryAdress == null || memoryAdress == 0){
+                    return null;
+                }
+                Process process = (Process) this.mainMemory[memoryAdress];
+                return process;
+            }
+            
+            case HRRN -> {
+                Integer memoryAdress = this.schealuder.HRRN();
                 if(memoryAdress == null || memoryAdress == 0){
                     return null;
                 }

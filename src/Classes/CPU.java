@@ -17,7 +17,7 @@ public class CPU extends Thread implements ClockListener{
     private int ID;
     private int PC;
     private int MAR;
-    private int IR;
+    private int cpuStatus;
     private boolean enabled;  
     private MemoryEntity[] mainMemory;
     private Clock clock;
@@ -66,7 +66,7 @@ public class CPU extends Thread implements ClockListener{
         this.ID = ID;
         this.PC = PC;
         this.MAR = MAR;
-        this.IR = 0;
+        this.cpuStatus = 0;
         this.enabled = false;
         this.mainMemory = mainMemory;
         this.clock = clock;
@@ -146,11 +146,11 @@ public class CPU extends Thread implements ClockListener{
     }
 
     public int getIR() {
-        return IR;
+        return cpuStatus;
     }
 
     public void setIR(int IR) {
-        this.IR = IR;
+        this.cpuStatus = IR;
     }
 
 
@@ -166,7 +166,8 @@ public class CPU extends Thread implements ClockListener{
             
             if(this.ticksCounter == this.ticksPerInstruction){                           
 
-                switch(IR){
+                switch(cpuStatus){
+
                     case RUN_OS -> {
                         System.out.println(this + "   Corrinedo SO");            
                         runOperativeSystem();                    
@@ -199,7 +200,7 @@ public class CPU extends Thread implements ClockListener{
             //Elige el siguiente proceso segun la planificacion
             this.currentProcess = OS.assignNextProcess();            
             if(this.currentProcess == null){
-                this.IR = RUN_IDLE_PROCESS;                
+                this.cpuStatus = RUN_IDLE_PROCESS;                
                 return;
             }            
             
@@ -207,7 +208,7 @@ public class CPU extends Thread implements ClockListener{
             this.PC = this.currentProcess.getPC();
             this.MAR = this.currentProcess.getMAR();       
             this.currentProcess.setStatus(Process.RUNNING);
-            this.IR = RUN_PROCESS;                                       
+            this.cpuStatus = RUN_PROCESS;                                       
             
         } catch (InterruptedException ex) {
             Logger.getLogger(CPU.class.getName()).log(Level.SEVERE, null, ex);
@@ -223,10 +224,9 @@ public class CPU extends Thread implements ClockListener{
     public void runProcess(){  
         //Si el proceso no ha terminado y no ha sido interrumpido -> seguir ejecutando
         boolean processEnded = this.MAR < this.currentProcess.getNumInstructions();
-        boolean processRunningStatus = this.currentProcess.getStatus() == Process.RUNNING;
-        boolean isCPUasigned = this.currentProcess.getAssignedCPU() == this.ID;
+        boolean processRunningStatus = this.currentProcess.getStatus() == Process.RUNNING;        
         
-        if(processEnded && processRunningStatus && isCPUasigned){             
+        if(processEnded && processRunningStatus){             
             
             //Si la planificacion es RR verificar el quantum de tiempo
             if(this.currentPlanningPolicy == OperatingSystem.roundRobin){                
@@ -235,7 +235,7 @@ public class CPU extends Thread implements ClockListener{
                     OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
                     OS.enqueueInReadyQueue(this.currentProcess.getMemoryAdress());
                     this.currentProcess = null;
-                    this.IR = RUN_OS;
+                    this.cpuStatus = RUN_OS;
                     return;
                 }
                 this.currentProcess.decreaseRemainingTime();
@@ -246,7 +246,7 @@ public class CPU extends Thread implements ClockListener{
                 ProcessIObound process = (ProcessIObound) this.currentProcess;
                 
                 if(process.getTicksCountException() == process.getTicksForException()){                    
-                    this.IR = BLOCK_PROCESS; //Bloquear proceso
+                    this.cpuStatus = BLOCK_PROCESS; //Bloquear proceso
                     blockProcess();
                     return;
                 }              
@@ -288,7 +288,7 @@ public class CPU extends Thread implements ClockListener{
                 }
             }
             this.currentProcess = null;
-            this.IR = RUN_OS;
+            this.cpuStatus = RUN_OS;
         }
     }
     
@@ -308,7 +308,7 @@ public class CPU extends Thread implements ClockListener{
             thread.start(); //Hilo para el manejo de la excepcion
             
             this.currentProcess = null;
-            this.IR = RUN_OS;
+            this.cpuStatus = RUN_OS;
             
             this.semaphore.release();
         } catch (InterruptedException ex) {
@@ -326,7 +326,7 @@ public class CPU extends Thread implements ClockListener{
             
             OperatingSystem OS = (OperatingSystem) this.mainMemory[0];            
             if(!OS.getScheduler().getReadyQueue().isEmpty()){
-                this.IR = RUN_OS;
+                this.cpuStatus = RUN_OS;
             }
             
         } catch (InterruptedException ex) {

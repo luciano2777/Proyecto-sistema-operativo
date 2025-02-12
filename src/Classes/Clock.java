@@ -31,8 +31,8 @@ public class Clock extends Thread{
      * @param interval              
      */
     public Clock(int interval) {
-        this.tick = 0;
-        this.interval = interval;          
+        Clock.tick = 0;
+        Clock.interval = interval;          
         this.status = RUNNING;
         this.clockListeners = new List();
         this.semaphore = new Semaphore(1);

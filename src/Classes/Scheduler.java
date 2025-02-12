@@ -11,7 +11,7 @@ import DataStructures.Queue;
  *
  * @author Juan
  */
-public class Scheduler {
+public class Scheduler implements ClockListener{
     private List<Process> processList;
     private List<Process> completedProcessList;
     private Queue<Integer> readyQueue;
@@ -106,7 +106,7 @@ public class Scheduler {
     
     
     public Integer SPN(){
-        this.readyQueue = readyQueue.sortShortestProcessQueue(this.mainMemory);           
+        this.readyQueue = readyQueue.sortShortestProcessQueueSPN(this.mainMemory);           
         Integer memoryAdress = readyQueue.dequeue();
         
         //No hay procesos en la cola de listos pero si hay en la cola de bloqueados
@@ -117,6 +117,50 @@ public class Scheduler {
             return memoryAdress;
         }                
     }
+    
+    public Integer SRT(){
+        this.readyQueue = readyQueue.sortShortestProcessQueueSRT(this.mainMemory);           
+        Integer memoryAdress = readyQueue.dequeue();
+        
+        //No hay procesos en la cola de listos pero si hay en la cola de bloqueados
+        if(memoryAdress == null && !this.blockedQueue.isEmpty()){ 
+            return 0;
+        }
+        else{
+            return memoryAdress;
+        }  
+    }
+    
+    public Integer HRRN(){
+        this.readyQueue = readyQueue.sortShortestProcessQueueHRRN(this.mainMemory);           
+        Integer memoryAdress = readyQueue.dequeue();
+        
+        //No hay procesos en la cola de listos pero si hay en la cola de bloqueados
+        if(memoryAdress == null && !this.blockedQueue.isEmpty()){ 
+            return 0;
+        }
+        else{
+            return memoryAdress;
+        }  
+    }
+    
+    public void increaseTimeInQueue(){
+        Integer memoryAdress = this.readyQueue.dequeue();
+        Process process = (Process) this.mainMemory[memoryAdress];
+        process.increaseTimeInQueue();
+        this.readyQueue.enqueue(process.getMemoryAdress());
+    }
+
+    @Override
+    public void onTick(int tick) {
+        for (int i = 0; i < this.readyQueue.getSize(); i++) {
+            increaseTimeInQueue();
+        }
+    }
+    
+    
+    
+    
 
 
 

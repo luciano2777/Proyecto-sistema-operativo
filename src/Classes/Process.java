@@ -17,10 +17,10 @@ public class Process extends MemoryEntity{
     private int status;
     private String name;
     private int PC;
-    private int MAR;    
-    private Integer assignedCPU;
+    private int MAR;       
     private Integer memoryAdress;
-    private int remainingTime;
+    private int remainingTime; //para RR
+    private int timeInQueue = 0; //para HRRN
     private int numInstructions;
     
     //Constantes
@@ -41,8 +41,7 @@ public class Process extends MemoryEntity{
         this.status = READY;
         this.name = name;
         this.PC = 1;
-        this.MAR = 0;
-        this.assignedCPU = null;
+        this.MAR = 0;        
         this.memoryAdress = null;
         this.remainingTime = 5;
         this.numInstructions = numInstructions;
@@ -64,8 +63,7 @@ public class Process extends MemoryEntity{
         this.status = READY;
         this.name = name;
         this.PC = PC;
-        this.MAR = MAR;
-        this.assignedCPU = null;
+        this.MAR = MAR;        
         this.memoryAdress = memoryAdress;
         this.remainingTime = 5;
         this.numInstructions = numInstructions;
@@ -86,8 +84,7 @@ public class Process extends MemoryEntity{
         this.status = READY;
         this.name = name;
         this.PC = 1;
-        this.MAR = 0;
-        this.assignedCPU = null;
+        this.MAR = 0;        
         this.memoryAdress = memoryAdress;
         this.remainingTime = 5;
         this.numInstructions = numInstructions;
@@ -147,14 +144,6 @@ public class Process extends MemoryEntity{
         this.memoryAdress = memoryAdress;
     }
 
-    public Integer getAssignedCPU() {
-        return assignedCPU;
-    }
-
-    public void setAssignedCPU(Integer assignedCPU) {
-        this.assignedCPU = assignedCPU;
-    }
-
     public int getRemainingTime() {
         return remainingTime;
     }
@@ -165,6 +154,18 @@ public class Process extends MemoryEntity{
     
     public void decreaseRemainingTime(){
         this.remainingTime -= 1;
+    }
+
+    public int getTimeInQueue() {
+        return timeInQueue;
+    }
+
+    public void setTimeInQueue(int timeInQueue) {
+        this.timeInQueue = timeInQueue;
+    }
+    
+    public void increaseTimeInQueue(){
+        this.timeInQueue++;
     }
     
     

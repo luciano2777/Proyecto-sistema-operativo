@@ -22,7 +22,7 @@ public class Main {
         //MainView mainView = new MainView();                        
         
         Simulator sim = new Simulator(2, 2000, 1);
-        sim.setPlanningPolicy(OperatingSystem.SPN);
+        sim.setPlanningPolicy(OperatingSystem.SRT);
         
         sim.createProcessIObound("P0", 3, 1, 2, 2);
         sim.createProcessIObound("P1", 4, 2, 2, 2);
