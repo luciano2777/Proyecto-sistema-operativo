@@ -106,7 +106,7 @@ public class ProcessIObound extends Process{
 
     @Override
     public String toString() {
-        return "ProcessIObound{ " + "Nombre=" + getName() + ", MAR=" + getMAR() + ", numInstructions=" + getNumInstructions() + ", ticksCountExc=" + ticksCountException + ", ticksForExc=" + ticksForException + ", ticksRestantes=" + getRemainingTime() + " }";
+        return "IO -> ID=" + getID() + ", Nombre=" + getName() + ", Estado=" + getStatus() + ", PC=" + getPC() + ", MAR=" + getMAR();
     }
     
     

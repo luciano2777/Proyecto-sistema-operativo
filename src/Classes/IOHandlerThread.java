@@ -31,6 +31,7 @@ public class IOHandlerThread extends Thread{
                     OperatingSystem OS = (OperatingSystem) mainMemory[0];            
                     process.setStatus(Process.READY);
                     process.setTicksCountException(0);
+                    OS.getScheduler().getBlockedQueue().dequeue();
                     OS.getScheduler().getReadyQueue().enqueue(process.getMemoryAdress());
                     running = false;
                 }

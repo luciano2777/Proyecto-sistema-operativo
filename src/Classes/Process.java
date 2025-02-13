@@ -173,7 +173,7 @@ public class Process extends MemoryEntity{
 
     @Override
     public String toString() {
-        return "Process{ name=" + name + ", status=" + status + ", MAR=" + MAR + ", numInstructions=" + numInstructions + ", ticksRestantes=" + getRemainingTime() + " }";
+        return "CPU -> ID=" + getID() + ", Nombre=" + getName() + ", Estado=" + getStatus() + ", PC=" + getPC() + ", MAR=" + getMAR();
     }
 
 

@@ -4,23 +4,74 @@
  */
 package GUI;
 
+import Classes.MemoryEntity;
+import Classes.Simulator;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.Timer;
 
 /**
  *
  * @author Juan
  */
-public class CreateProcessView extends javax.swing.JPanel {
-
+public class CreateProcessView extends javax.swing.JPanel {    
+    private Simulator simulator;
+    private SimulationView simView;
     /**
      * Creates new form CreateProcessView
      */
-    public CreateProcessView() {
+    public CreateProcessView(Simulator simulator, SimulationView simView) {
         initComponents();
+        this.simulator = simulator;
+        this.simView = simView;
         buttonGroup.add(cpuBoundRButton);
         buttonGroup.add(IOBoundRButton);
         cpuBoundRButton.setSelected(true);
+        createdMessage.setText("");
+    }
+    
+    public void saveProcess(String name, Integer numInstructions, boolean isIObound,
+        Integer ticksToException, Integer ticksToSuccess, Integer memoryAdress){
+        String filePath = "src" + File.separator + "Config" + File.separator + "process.txt";
+        FileWriter fw = null;
+        
+        try {
+            fw = new FileWriter(new File(filePath), true);
+            BufferedWriter bw = new BufferedWriter(fw);
+                        
+            if(isIObound){
+                bw.write("IObound-"+name+"-"+numInstructions+"-"+memoryAdress+"-"+ticksToException+"-"+ticksToSuccess);                 
+            }
+            else{
+                bw.write("CPUbound-"+name+"-"+numInstructions+"-"+memoryAdress);                 
+            }
+            bw.newLine();
+            bw.close(); 
+            fw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsView.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                fw.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SettingsView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            createdMessage.setText("Cambios guardados exitosamente!");
+            Timer timer = new Timer(3000, (ActionEvent e) -> {
+                createdMessage.setText("");
+            });
+            
+            timer.setRepeats(false);
+            timer.start();
+        }
     }
 
     /**
@@ -46,19 +97,20 @@ public class CreateProcessView extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         ticksToRequestIOplus = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        ticksToRequestIOLabel = new javax.swing.JLabel();
-        ticksToSatisfyIOLabel = new javax.swing.JLabel();
+        ticksToExceptionLabel = new javax.swing.JLabel();
+        ticksToSuccesLabel = new javax.swing.JLabel();
         ticksToSatisfyIOplus = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         ticksToSatisfyIOminus = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
+        createdMessage = new javax.swing.JLabel();
 
         jPanel1.setBackground(new java.awt.Color(239, 239, 239));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         CreateProcessLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         CreateProcessLabel.setText("Crear Proceso");
-        jPanel1.add(CreateProcessLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, -1, -1));
+        jPanel1.add(CreateProcessLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 40, -1, -1));
 
         nameInput.setBackground(new java.awt.Color(239, 239, 239));
         nameInput.setForeground(new java.awt.Color(102, 102, 102));
@@ -72,7 +124,7 @@ public class CreateProcessView extends javax.swing.JPanel {
                 nameInputFocusLost(evt);
             }
         });
-        jPanel1.add(nameInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 100, 200, -1));
+        jPanel1.add(nameInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 110, 200, -1));
 
         numInstructionsInput.setBackground(new java.awt.Color(239, 239, 239));
         numInstructionsInput.setForeground(new java.awt.Color(102, 102, 102));
@@ -86,7 +138,7 @@ public class CreateProcessView extends javax.swing.JPanel {
                 numInstructionsInputFocusLost(evt);
             }
         });
-        jPanel1.add(numInstructionsInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 140, 200, -1));
+        jPanel1.add(numInstructionsInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 150, 200, -1));
 
         cpuBoundRButton.setText("CPU Bound");
         cpuBoundRButton.addActionListener(new java.awt.event.ActionListener() {
@@ -94,7 +146,7 @@ public class CreateProcessView extends javax.swing.JPanel {
                 cpuBoundRButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(cpuBoundRButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, -1, -1));
+        jPanel1.add(cpuBoundRButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 200, -1, -1));
 
         IOBoundRButton.setText("I/O Bound");
         IOBoundRButton.addActionListener(new java.awt.event.ActionListener() {
@@ -102,18 +154,23 @@ public class CreateProcessView extends javax.swing.JPanel {
                 IOBoundRButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(IOBoundRButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 190, -1, -1));
+        jPanel1.add(IOBoundRButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 200, -1, -1));
 
         IOSatisfyLabel.setForeground(new java.awt.Color(153, 153, 153));
         IOSatisfyLabel.setText("Numero de ciclos para satisfacer operacion de I/O:");
-        jPanel1.add(IOSatisfyLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 280, -1, 20));
+        jPanel1.add(IOSatisfyLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 290, -1, 20));
 
         IORequestLabel.setForeground(new java.awt.Color(153, 153, 153));
         IORequestLabel.setText("Numero de ciclos para generar solicitud de I/O:");
-        jPanel1.add(IORequestLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 240, 250, 20));
+        jPanel1.add(IORequestLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 250, 250, 20));
 
         CreateButton.setText("Crear!");
-        jPanel1.add(CreateButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 350, -1, -1));
+        CreateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreateButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(CreateButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 330, -1, -1));
 
         ticksToRequestIOminus.setBackground(new java.awt.Color(153, 153, 153));
         ticksToRequestIOminus.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -126,7 +183,7 @@ public class CreateProcessView extends javax.swing.JPanel {
         jLabel5.setText("-");
         ticksToRequestIOminus.add(jLabel5, new java.awt.GridBagConstraints());
 
-        jPanel1.add(ticksToRequestIOminus, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 240, 20, 20));
+        jPanel1.add(ticksToRequestIOminus, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 250, 20, 20));
 
         ticksToRequestIOplus.setBackground(new java.awt.Color(153, 153, 153));
         ticksToRequestIOplus.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -140,13 +197,13 @@ public class CreateProcessView extends javax.swing.JPanel {
         jLabel4.setText("+");
         ticksToRequestIOplus.add(jLabel4, new java.awt.GridBagConstraints());
 
-        jPanel1.add(ticksToRequestIOplus, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 240, 20, 20));
+        jPanel1.add(ticksToRequestIOplus, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 250, 20, 20));
 
-        ticksToRequestIOLabel.setText("1");
-        jPanel1.add(ticksToRequestIOLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 240, 20, 20));
+        ticksToExceptionLabel.setText("1");
+        jPanel1.add(ticksToExceptionLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 250, 20, 20));
 
-        ticksToSatisfyIOLabel.setText("1");
-        jPanel1.add(ticksToSatisfyIOLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 280, 20, -1));
+        ticksToSuccesLabel.setText("1");
+        jPanel1.add(ticksToSuccesLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 290, 20, -1));
 
         ticksToSatisfyIOplus.setBackground(new java.awt.Color(153, 153, 153));
         ticksToSatisfyIOplus.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -160,7 +217,7 @@ public class CreateProcessView extends javax.swing.JPanel {
         jLabel7.setText("+");
         ticksToSatisfyIOplus.add(jLabel7, new java.awt.GridBagConstraints());
 
-        jPanel1.add(ticksToSatisfyIOplus, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 280, 20, 20));
+        jPanel1.add(ticksToSatisfyIOplus, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 290, 20, 20));
 
         ticksToSatisfyIOminus.setBackground(new java.awt.Color(153, 153, 153));
         ticksToSatisfyIOminus.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -173,17 +230,22 @@ public class CreateProcessView extends javax.swing.JPanel {
         jLabel6.setText("-");
         ticksToSatisfyIOminus.add(jLabel6, new java.awt.GridBagConstraints());
 
-        jPanel1.add(ticksToSatisfyIOminus, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 280, 20, 20));
+        jPanel1.add(ticksToSatisfyIOminus, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 290, 20, 20));
+
+        createdMessage.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        createdMessage.setForeground(new java.awt.Color(0, 204, 51));
+        createdMessage.setText("Proceso creado exitosamente!");
+        jPanel1.add(createdMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 380, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 970, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -230,28 +292,57 @@ public class CreateProcessView extends javax.swing.JPanel {
     }//GEN-LAST:event_numInstructionsInputFocusLost
 
     private void ticksToRequestIOplusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOplusMouseClicked
-        if((ticksToRequestIOLabel.getText().length() + 1) < 4){
-            ticksToRequestIOLabel.setText(Integer.toString(Integer.parseInt(ticksToRequestIOLabel.getText()) + 1));
+        if((ticksToExceptionLabel.getText().length() + 1) < 4){
+            ticksToExceptionLabel.setText(Integer.toString(Integer.parseInt(ticksToExceptionLabel.getText()) + 1));
         }
     }//GEN-LAST:event_ticksToRequestIOplusMouseClicked
 
     private void ticksToRequestIOminusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOminusMouseClicked
-        if(Integer.parseInt(ticksToRequestIOLabel.getText()) > 1){
-            ticksToRequestIOLabel.setText(Integer.toString(Integer.parseInt(ticksToRequestIOLabel.getText()) - 1));
+        if(Integer.parseInt(ticksToExceptionLabel.getText()) > 1){
+            ticksToExceptionLabel.setText(Integer.toString(Integer.parseInt(ticksToExceptionLabel.getText()) - 1));
         }
     }//GEN-LAST:event_ticksToRequestIOminusMouseClicked
 
     private void ticksToSatisfyIOminusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOminusMouseClicked
-        if(Integer.parseInt(ticksToSatisfyIOLabel.getText()) > 1){
-            ticksToSatisfyIOLabel.setText(Integer.toString(Integer.parseInt(ticksToSatisfyIOLabel.getText()) - 1));
+        if(Integer.parseInt(ticksToSuccesLabel.getText()) > 1){
+            ticksToSuccesLabel.setText(Integer.toString(Integer.parseInt(ticksToSuccesLabel.getText()) - 1));
         }
     }//GEN-LAST:event_ticksToSatisfyIOminusMouseClicked
 
     private void ticksToSatisfyIOplusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOplusMouseClicked
-        if((ticksToSatisfyIOLabel.getText().length() + 1) < 4){
-            ticksToSatisfyIOLabel.setText(Integer.toString(Integer.parseInt(ticksToSatisfyIOLabel.getText()) + 1));
+        if((ticksToSuccesLabel.getText().length() + 1) < 4){
+            ticksToSuccesLabel.setText(Integer.toString(Integer.parseInt(ticksToSuccesLabel.getText()) + 1));
         }
     }//GEN-LAST:event_ticksToSatisfyIOplusMouseClicked
+
+    private void CreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateButtonActionPerformed
+        String name = nameInput.getText();
+        Integer numInstructions = Integer.valueOf(numInstructionsInput.getText());
+        boolean isIObound = IOBoundRButton.isSelected();
+        Integer ticksToException = Integer.valueOf(ticksToExceptionLabel.getText());
+        Integer ticksToSuccess = Integer.valueOf(ticksToSuccesLabel.getText());
+        Integer memoryAdress = null; 
+        
+        MemoryEntity[] mainMemory = this.simulator.getMainMemory();
+        for (int i = 1; i < mainMemory.length; i++) {            
+            if(mainMemory[i] == null){
+                memoryAdress = i;
+                break;
+            }
+        }
+        
+        
+        if(isIObound){
+            simulator.createProcessIObound(name, numInstructions, memoryAdress, ticksToException, ticksToSuccess);
+        }
+        else{
+            simulator.createProcessCPUbound(name, numInstructions, memoryAdress);
+        }
+        
+        saveProcess(name, numInstructions, isIObound, ticksToException, ticksToSuccess, memoryAdress);
+        this.simView.drawReadyQueue();
+        
+    }//GEN-LAST:event_CreateButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -262,6 +353,7 @@ public class CreateProcessView extends javax.swing.JPanel {
     private javax.swing.JLabel IOSatisfyLabel;
     private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JRadioButton cpuBoundRButton;
+    private javax.swing.JLabel createdMessage;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -269,11 +361,11 @@ public class CreateProcessView extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField nameInput;
     private javax.swing.JTextField numInstructionsInput;
-    private javax.swing.JLabel ticksToRequestIOLabel;
+    private javax.swing.JLabel ticksToExceptionLabel;
     private javax.swing.JPanel ticksToRequestIOminus;
     private javax.swing.JPanel ticksToRequestIOplus;
-    private javax.swing.JLabel ticksToSatisfyIOLabel;
     private javax.swing.JPanel ticksToSatisfyIOminus;
     private javax.swing.JPanel ticksToSatisfyIOplus;
+    private javax.swing.JLabel ticksToSuccesLabel;
     // End of variables declaration//GEN-END:variables
 }

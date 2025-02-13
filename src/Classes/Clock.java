@@ -20,9 +20,10 @@ public class Clock extends Thread{
     private List<ClockListener> clockListeners;
     private Semaphore semaphore;
     
-    public static final int RUNNING = 0;
-    public static final int PAUSED = 1;
-    public static final int FINISHED = 2;
+    public static final int READY = 0;
+    public static final int RUNNING = 1;
+    public static final int PAUSED = 2;
+    public static final int FINISHED = 3;
 
     /***
      * Contructor: Crea un reloj encargado de sincronizar los procesadores donde 
@@ -33,7 +34,7 @@ public class Clock extends Thread{
     public Clock(int interval) {
         Clock.tick = 0;
         Clock.interval = interval;          
-        this.status = RUNNING;
+        this.status = READY;
         this.clockListeners = new List();
         this.semaphore = new Semaphore(1);
     }  
@@ -91,7 +92,7 @@ public class Clock extends Thread{
         try{
             Thread.sleep(this.interval);
             tick++; 
-            notifyListeners();
+            notifyListeners();            
         }
         catch(InterruptedException e){
             Thread.currentThread().interrupt();

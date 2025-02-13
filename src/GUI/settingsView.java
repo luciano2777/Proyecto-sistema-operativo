@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import Classes.Simulator;
 import java.awt.event.ActionEvent;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,20 +19,28 @@ import javax.swing.Timer;
  * @author Juan
  */
 public class SettingsView extends javax.swing.JPanel {
-    private File filePath = new File("config.txt");
+    private File filePath = new File("src" + File.separator + "Config" + File.separator + "config.txt");
+    private Simulator simulator;
+    private SimulationView simView;
     /**
      * Creates new form settingsView
+     * @param simulator
+     * @param simView
      */
-    public SettingsView() {
+    public SettingsView(Simulator simulator, SimulationView simView) {
         initComponents(); 
+        this.simulator = simulator;
+        this.simView = simView;
         saveMessage.setText("");
     }
     
-    public SettingsView(String interval, String numCpus, String ticksPerInstruction){
+    public SettingsView(Simulator simulator, SimulationView simView, String numCpus, String interval, String ticksPerInstruction){
         initComponents(); 
+        this.simulator = simulator;
+        this.simView = simView;
         saveMessage.setText("");
-        intervalInput.setText(interval);
         numCpusLabel.setText(numCpus);
+        intervalInput.setText(interval);
         ticksPerInstructionLabel.setText(ticksPerInstruction);
     }
 
@@ -49,7 +58,7 @@ public class SettingsView extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
         intervalInput = new javax.swing.JTextField();
         numCpusLabel = new javax.swing.JLabel();
         numCPUplus = new javax.swing.JPanel();
@@ -68,29 +77,29 @@ public class SettingsView extends javax.swing.JPanel {
 
         settingsLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         settingsLabel.setText("Configuracion");
-        jPanel1.add(settingsLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 30, 150, 50));
+        jPanel1.add(settingsLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 40, 150, 50));
 
         jLabel1.setText("Duracion de un ciclo (milisegundos)");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 140, -1, -1));
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 150, -1, -1));
 
         jLabel2.setText("Numero de procesadores activos");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 190, -1, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 200, -1, -1));
 
         jLabel3.setText("Ciclos por instruccion");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 240, -1, -1));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 250, -1, -1));
 
-        jButton1.setText("Guardar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        saveButton.setText("Guardar");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                saveButtonActionPerformed(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 330, -1, -1));
+        jPanel1.add(saveButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 340, -1, -1));
 
         intervalInput.setBackground(new java.awt.Color(239, 239, 239));
         intervalInput.setText("1000");
         intervalInput.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
-        jPanel1.add(intervalInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 140, 60, -1));
+        jPanel1.add(intervalInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 150, 60, -1));
         intervalInput.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 char c = evt.getKeyChar();
@@ -101,7 +110,7 @@ public class SettingsView extends javax.swing.JPanel {
         });
 
         numCpusLabel.setText("2");
-        jPanel1.add(numCpusLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 190, 20, -1));
+        jPanel1.add(numCpusLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 200, 20, -1));
 
         numCPUplus.setBackground(new java.awt.Color(153, 153, 153));
         numCPUplus.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -115,7 +124,7 @@ public class SettingsView extends javax.swing.JPanel {
         jLabel4.setText("+");
         numCPUplus.add(jLabel4, new java.awt.GridBagConstraints());
 
-        jPanel1.add(numCPUplus, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 190, 20, 20));
+        jPanel1.add(numCPUplus, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 200, 20, 20));
 
         numCPUminus.setBackground(new java.awt.Color(153, 153, 153));
         numCPUminus.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -128,10 +137,10 @@ public class SettingsView extends javax.swing.JPanel {
         jLabel5.setText("-");
         numCPUminus.add(jLabel5, new java.awt.GridBagConstraints());
 
-        jPanel1.add(numCPUminus, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 190, 20, 20));
+        jPanel1.add(numCPUminus, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 200, 20, 20));
 
         ticksPerInstructionLabel.setText("1");
-        jPanel1.add(ticksPerInstructionLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 240, 20, -1));
+        jPanel1.add(ticksPerInstructionLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 250, 20, -1));
 
         ticksPerInstructionPlus.setBackground(new java.awt.Color(153, 153, 153));
         ticksPerInstructionPlus.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -145,7 +154,7 @@ public class SettingsView extends javax.swing.JPanel {
         jLabel6.setText("+");
         ticksPerInstructionPlus.add(jLabel6, new java.awt.GridBagConstraints());
 
-        jPanel1.add(ticksPerInstructionPlus, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 240, 20, 20));
+        jPanel1.add(ticksPerInstructionPlus, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 250, 20, 20));
 
         ticksPerInstructionMinus.setBackground(new java.awt.Color(153, 153, 153));
         ticksPerInstructionMinus.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -158,26 +167,26 @@ public class SettingsView extends javax.swing.JPanel {
         jLabel7.setText("-");
         ticksPerInstructionMinus.add(jLabel7, new java.awt.GridBagConstraints());
 
-        jPanel1.add(ticksPerInstructionMinus, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 240, 20, 20));
+        jPanel1.add(ticksPerInstructionMinus, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 250, 20, 20));
 
         saveMessage.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         saveMessage.setForeground(new java.awt.Color(0, 204, 51));
-        saveMessage.setText("Mensaje de guardado");
-        jPanel1.add(saveMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 380, -1, -1));
+        saveMessage.setText("Cambios guardados exitosamente!");
+        jPanel1.add(saveMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 390, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 970, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         FileWriter fw = null;
         try {
             fw = new FileWriter(filePath);
@@ -187,7 +196,12 @@ public class SettingsView extends javax.swing.JPanel {
             String tickPerInstruction = ticksPerInstructionLabel.getText();
             String numCpusEnabled = numCpusLabel.getText();
             
-            bw.write(tickDuration + "-" + numCpusEnabled + "-" + tickPerInstruction); 
+            this.simulator.setSettings(Integer.parseInt(numCpusEnabled),
+                    Integer.parseInt(tickDuration), Integer.parseInt(tickPerInstruction));
+            
+            this.simView.initCPUs();
+            
+            bw.write(numCpusEnabled + "-" + tickDuration + "-" + tickPerInstruction); 
             bw.close(); 
             fw.close();
         } catch (IOException ex) {
@@ -206,7 +220,7 @@ public class SettingsView extends javax.swing.JPanel {
             timer.setRepeats(false);
             timer.start();
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_saveButtonActionPerformed
 
     private void numCPUplusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_numCPUplusMouseClicked
         if(Integer.parseInt(numCpusLabel.getText()) == 2){
@@ -233,7 +247,6 @@ public class SettingsView extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField intervalInput;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -245,6 +258,7 @@ public class SettingsView extends javax.swing.JPanel {
     private javax.swing.JPanel numCPUminus;
     private javax.swing.JPanel numCPUplus;
     private javax.swing.JLabel numCpusLabel;
+    private javax.swing.JButton saveButton;
     private javax.swing.JLabel saveMessage;
     private javax.swing.JLabel settingsLabel;
     private javax.swing.JLabel ticksPerInstructionLabel;

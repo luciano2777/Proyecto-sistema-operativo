@@ -27,7 +27,7 @@ public class CPU extends Thread implements ClockListener{
     private int ticksPerInstruction;
     private int ticksCounter = 0;
     
-    //Instrucciones
+    //Constantes
     public final static int RUN_OS = 0;
     public final static int RUN_PROCESS = 1;
     public final static int BLOCK_PROCESS = 2;
@@ -145,15 +145,15 @@ public class CPU extends Thread implements ClockListener{
         this.ticksCounter = ticksCounter;
     }
 
-    public int getIR() {
+    public int getCpuStatus() {
         return cpuStatus;
     }
 
-    public void setIR(int IR) {
-        this.cpuStatus = IR;
+    public void setCpuStatus(int cpuStatus) {
+        this.cpuStatus = cpuStatus;
     }
 
-
+    
     
     
     
@@ -326,6 +326,7 @@ public class CPU extends Thread implements ClockListener{
             
             OperatingSystem OS = (OperatingSystem) this.mainMemory[0];            
             if(!OS.getScheduler().getReadyQueue().isEmpty()){
+                this.currentProcess = null;
                 this.cpuStatus = RUN_OS;
             }
             

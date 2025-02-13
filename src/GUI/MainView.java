@@ -24,6 +24,7 @@ public class MainView extends javax.swing.JFrame {
     private int xMouse;
     private int yMouse;    
     private Simulator simulator;
+    private SimulationView simView;
     
     
     /**
@@ -31,27 +32,30 @@ public class MainView extends javax.swing.JFrame {
      */
     public MainView() {
         initComponents();
-        initView();
-        loadSettings();
-        this.simulator = new Simulator(2, 1000, 1);
-        
+        String[] settings = loadSettings();
+        if(settings[0].isBlank()){
+            this.simulator = new Simulator(3, 1000, 1);  
+        }
+        else{
+            this.simulator = new Simulator(Integer.parseInt(settings[0]), Integer.parseInt(settings[1]), Integer.parseInt(settings[2]));              
+        }
+        this.simView = new SimulationView(this.simulator);
         this.setVisible(true);
-        
+        initView();                
     }
-    
+            
     
     private String[] loadSettings(){
-        File filePath = new File("config.txt");
+        String filePath = "src" + File.separator + "Config" + File.separator + "config.txt";
         
         BufferedReader bufferedReader = null;
         try {
-            bufferedReader = new BufferedReader(new FileReader(filePath));
+            bufferedReader = new BufferedReader(new FileReader(new File(filePath)));
             try {
                 String settings = "";
-                String line = bufferedReader.readLine();
-                while (line != null) {                    
-                    settings = line;
-                    line = bufferedReader.readLine();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {                      
+                    settings = line;                    
                 }
                 return settings.split("-");
             } catch (IOException ex) {
@@ -79,11 +83,11 @@ public class MainView extends javax.swing.JFrame {
         
         SimulationButton.setSelected(true);
         
-        SimulationView simulationView = new SimulationView();  
-        simulationView.setSize(660, 420);
-        simulationView.setLocation(0, 0);
+          
+        simView.setSize(970, 510);
+        simView.setLocation(0, 0);
         bodyPanel.removeAll();        
-        bodyPanel.add(simulationView, BorderLayout.CENTER);
+        bodyPanel.add(simView, BorderLayout.CENTER);
         bodyPanel.revalidate();
         bodyPanel.repaint();
     }
@@ -98,6 +102,7 @@ public class MainView extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup = new javax.swing.ButtonGroup();
+        jPanel1 = new javax.swing.JPanel();
         topPanel = new javax.swing.JPanel();
         closeButton = new javax.swing.JPanel();
         closeLabel = new javax.swing.JLabel();
@@ -116,6 +121,8 @@ public class MainView extends javax.swing.JFrame {
         setUndecorated(true);
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         topPanel.setBackground(new java.awt.Color(255, 255, 255));
         topPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -147,7 +154,7 @@ public class MainView extends javax.swing.JFrame {
         closeLabel.setText("x");
         closeButton.add(closeLabel, new java.awt.GridBagConstraints());
 
-        topPanel.add(closeButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 0, 30, 30));
+        topPanel.add(closeButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 0, 30, 30));
 
         minimizeButton.setBackground(new java.awt.Color(255, 255, 255));
         minimizeButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -167,9 +174,9 @@ public class MainView extends javax.swing.JFrame {
         minimizeLabel.setText("-");
         minimizeButton.add(minimizeLabel, new java.awt.GridBagConstraints());
 
-        topPanel.add(minimizeButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 0, 30, 30));
+        topPanel.add(minimizeButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 0, 30, 30));
 
-        getContentPane().add(topPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 760, 30));
+        jPanel1.add(topPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1070, 30));
 
         leftPanel.setBackground(new java.awt.Color(204, 204, 204));
         leftPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -185,11 +192,16 @@ public class MainView extends javax.swing.JFrame {
 
         pauseButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         pauseButton.setText("Parar");
-        leftPanel.add(pauseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 80, -1));
+        pauseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pauseButtonActionPerformed(evt);
+            }
+        });
+        leftPanel.add(pauseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 450, 80, -1));
 
         finishButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        finishButton.setText("Terminar");
-        leftPanel.add(finishButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 380, 80, -1));
+        finishButton.setText("Reiniciar");
+        leftPanel.add(finishButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 480, 80, -1));
 
         startButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         startButton.setText("Iniciar ");
@@ -198,7 +210,7 @@ public class MainView extends javax.swing.JFrame {
                 startButtonActionPerformed(evt);
             }
         });
-        leftPanel.add(startButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 320, 80, -1));
+        leftPanel.add(startButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 80, -1));
 
         settingsButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         settingsButton.setText("Configuracion");
@@ -218,20 +230,22 @@ public class MainView extends javax.swing.JFrame {
         });
         leftPanel.add(SimulationButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 50));
 
-        getContentPane().add(leftPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 100, 420));
+        jPanel1.add(leftPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, -1, 510));
 
         javax.swing.GroupLayout bodyPanelLayout = new javax.swing.GroupLayout(bodyPanel);
         bodyPanel.setLayout(bodyPanelLayout);
         bodyPanelLayout.setHorizontalGroup(
             bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 660, Short.MAX_VALUE)
+            .addGap(0, 970, Short.MAX_VALUE)
         );
         bodyPanelLayout.setVerticalGroup(
             bodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 420, Short.MAX_VALUE)
+            .addGap(0, 510, Short.MAX_VALUE)
         );
 
-        getContentPane().add(bodyPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 30, 660, 420));
+        jPanel1.add(bodyPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 30, 970, 510));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1070, 540));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -280,8 +294,8 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_topPanelMouseDragged
 
     private void createProcessButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createProcessButtonActionPerformed
-        CreateProcessView createProcessView = new CreateProcessView();
-        createProcessView.setSize(660, 420);
+        CreateProcessView createProcessView = new CreateProcessView(simulator, this.simView);
+        createProcessView.setSize(970, 510);
         createProcessView.setLocation(0, 0);
         
         bodyPanel.removeAll();
@@ -291,9 +305,9 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_createProcessButtonActionPerformed
 
     private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
-        String[] settings = loadSettings();
-        SettingsView settingsView = new SettingsView(settings[0], settings[1], settings[2]);
-        settingsView.setSize(660, 420);
+        SettingsView settingsView = new SettingsView(simulator, simView, Integer.toString(simulator.getNumCPUenable()),
+                Integer.toString(simulator.getInterval()), Integer.toString(simulator.getTicksPerInstruction()));
+        settingsView.setSize(970, 510);
         settingsView.setLocation(0, 0);
         
         bodyPanel.removeAll();
@@ -303,19 +317,25 @@ public class MainView extends javax.swing.JFrame {
     }//GEN-LAST:event_settingsButtonActionPerformed
 
     private void SimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SimulationButtonActionPerformed
-        SimulationView simulationView = new SimulationView();
-        simulationView.setSize(660, 420);
-        simulationView.setLocation(0, 0);
+        simView.setSize(970, 510);
+        simView.setLocation(0, 0);
         
         bodyPanel.removeAll();
-        bodyPanel.add(simulationView, BorderLayout.CENTER);
+        bodyPanel.add(simView, BorderLayout.CENTER);
         bodyPanel.revalidate();
         bodyPanel.repaint();
     }//GEN-LAST:event_SimulationButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        simulator.startSimulation();
+        startButton.setText("Resumir");
+        simulator.startSimulation();                    
+        startButton.setEnabled(false);            
     }//GEN-LAST:event_startButtonActionPerformed
+
+    private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
+        simulator.stopSimulation();
+        startButton.setEnabled(true);
+    }//GEN-LAST:event_pauseButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -360,6 +380,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JLabel closeLabel;
     private javax.swing.JToggleButton createProcessButton;
     private javax.swing.JButton finishButton;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JPanel minimizeButton;
     private javax.swing.JLabel minimizeLabel;

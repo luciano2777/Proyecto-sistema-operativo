@@ -46,6 +46,8 @@ public class ProcessCPUbound extends Process {
     public ProcessCPUbound(String name, int numInstructions, int memoryAdress) {
         super(name, numInstructions, memoryAdress);
     }
+    
+    
 
 
     

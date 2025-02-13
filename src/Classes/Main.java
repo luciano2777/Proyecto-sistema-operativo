@@ -4,10 +4,7 @@
  */
 package Classes;
 
-import DataStructures.Queue;
 import GUI.MainView;
-import GUI.ejemplo;
-
 
 /**
  *
@@ -19,24 +16,24 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //MainView mainView = new MainView();                        
+        MainView mainView = new MainView();                        
         
-        Simulator sim = new Simulator(2, 2000, 1);
-        sim.setPlanningPolicy(OperatingSystem.SRT);
-        
-        sim.createProcessIObound("P0", 3, 1, 2, 2);
-        sim.createProcessIObound("P1", 4, 2, 2, 2);
-        sim.createProcessCPUbound("P2", 5, 3);
-        sim.createProcessCPUbound("P3", 4, 4);
-        sim.createProcessCPUbound("P4", 3, 5);
-        sim.createProcessCPUbound("P5", 4, 6);
-        sim.createProcessIObound("P6", 6, 7, 2, 2);
+//        Simulator sim = new Simulator(3, 2000, 1);
+//        sim.setPlanningPolicy(OperatingSystem.SRT);
+//        
+//        sim.createProcessIObound("P0", 3, 1, 2, 2);
+//        sim.createProcessIObound("P1", 4, 2, 2, 2);
+//        sim.createProcessCPUbound("P2", 5, 3);
+//        sim.createProcessCPUbound("P3", 4, 4);
+//        sim.createProcessCPUbound("P4", 3, 5);
+//        sim.createProcessCPUbound("P5", 4, 6);
+//        sim.createProcessIObound("P6", 6, 7, 2, 2);
                    
         
         //System.out.println(sim.getOperatingSystem().getScheduler().getReadyQueue());
        
         
-        sim.startSimulation();
+//        sim.startSimulation();
 
 
 //        ejemplo e = new ejemplo();

@@ -16,6 +16,9 @@ public class Simulator {
     private MemoryEntity[] mainMemory;   
     private OperatingSystem operatingSystem;    
     private Clock clock;
+    private int numCPUenable;
+    private int interval;
+    private int ticksPerInstruction;
     
 
    /***
@@ -26,6 +29,9 @@ public class Simulator {
      * @param ticksPerInstruction 
     */
     public Simulator(int numCPUenable, int interval, int ticksPerInstruction) {
+        this.numCPUenable = numCPUenable;
+        this.interval = interval;
+        this.ticksPerInstruction = ticksPerInstruction;
         if(numCPUenable == 2 || numCPUenable == 3){
             this.CPUarray = new CPU[3];
             this.mainMemory = new MemoryEntity[1000];  
@@ -76,6 +82,60 @@ public class Simulator {
     public void setPlanningPolicy(int planningPolicy){
         this.operatingSystem.setPlanningPolicy(planningPolicy);
     }
+
+    public Clock getClock() {
+        return clock;
+    }
+
+    public void setClock(Clock clock) {
+        this.clock = clock;
+    }
+
+    public int getNumCPUenable() {
+        return numCPUenable;
+    }
+
+    public void setNumCPUenable(int numCPUenable) {
+        this.numCPUenable = numCPUenable;
+    }
+
+    public int getInterval() {
+        return interval;
+    }
+
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }
+
+    public int getTicksPerInstruction() {
+        return ticksPerInstruction;
+    }
+
+    public void setTicksPerInstruction(int ticksPerInstruction) {
+        this.ticksPerInstruction = ticksPerInstruction;
+    }
+    
+    
+    
+    public void setSettings(int cpuEnable, int interval, int ticksPerInstruction){
+        if(cpuEnable == 2 || cpuEnable == 3){
+            if(cpuEnable == 2){
+                this.CPUarray[0].setEnabled(true);                
+                this.CPUarray[1].setEnabled(true);                                
+                this.CPUarray[2].setEnabled(false);                                
+            }
+            else if(cpuEnable == 3){
+                this.CPUarray[2].setEnabled(true);
+            }
+            for (int i = 0; i < cpuEnable; i++) {                
+                this.CPUarray[i].setTicksPerInstruction(ticksPerInstruction);
+            }
+            Clock.setInterval(interval);            
+        }
+        this.numCPUenable = cpuEnable;
+        this.interval = interval;
+        this.ticksPerInstruction = ticksPerInstruction;
+    }
     
     //--------------------Procedimientos y Metodos----------------------
     
@@ -100,6 +160,7 @@ public class Simulator {
         
     public void stopSimulation(){
         if(this.clock.getStatus() == Clock.RUNNING){
+            System.out.println("Pause");
             this.clock.stopClock();                      
         }
     }
@@ -116,13 +177,31 @@ public class Simulator {
     }
     
     
+    
+    
     /***
      * Metodo para iniciar la ejecucion del simulador
      */
     public void startSimulation(){
-        if(!this.operatingSystem.getScheduler().getReadyQueue().isEmpty()){
-            clock.start();
-            bootLoader();        
+        boolean processInCPU = false;
+        for (int i = 0; i < 3; i++) {
+            CPU cpuAux = this.CPUarray[0];
+            if(cpuAux.getCurrentProcess() != null){
+                processInCPU = true;
+            }
+        }
+        
+        if(!this.operatingSystem.getScheduler().getReadyQueue().isEmpty() || processInCPU){
+            if(this.clock.getStatus() == Clock.READY){
+                System.out.println("start");
+                this.clock.setStatus(Clock.RUNNING);
+                clock.start();
+                bootLoader();                                        
+            }
+            else if(this.clock.getStatus() == Clock.PAUSED){
+                System.out.println("reanudar");
+                resumeSimulation();
+            }
         }
         else{
             System.err.println("No hay procesos para ejecutarse");
@@ -150,6 +229,11 @@ public class Simulator {
         else{
             System.err.println("Area de memoria no disponible");
         }
+    }
+    
+    
+    public void connectSimulatorView(ClockListener simulationView){
+        this.clock.getClockListeners().append(simulationView);
     }
     
     

@@ -225,7 +225,7 @@ public class ejemplo extends javax.swing.JFrame {
         array[1] = CPU2;
         
         for (int i = 0; i < 2; i++) {
-            switch (this.sim.getCPUarray()[i].getIR()) {
+            switch (this.sim.getCPUarray()[i].getCpuStatus()) {
                 case CPU.RUN_OS -> array[i].setText("CPU1: SO");
                 case CPU.RUN_PROCESS -> {
                     if(this.sim.getCPUarray()[0].getCurrentProcess() != null){
