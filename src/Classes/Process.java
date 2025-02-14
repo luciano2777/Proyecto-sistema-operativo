@@ -22,7 +22,8 @@ public class Process extends MemoryEntity{
     private int remainingTime; //para RR
     private int timeInQueue = 0; //para HRRN
     private int numInstructions;
-    
+    private int ExecutionTime = 0;
+    private Clock clock = new Clock(1);
     //Constantes
     public static final int RUNNING = 0;
     public static final int BLOCKED = 1;
@@ -45,6 +46,7 @@ public class Process extends MemoryEntity{
         this.memoryAdress = null;
         this.remainingTime = 5;
         this.numInstructions = numInstructions;
+        
         processCount++;
     }
     
@@ -102,6 +104,7 @@ public class Process extends MemoryEntity{
 
     public void setStatus(int status) {
         this.status = status;
+       
     }
 
     public String getName() {
@@ -164,11 +167,18 @@ public class Process extends MemoryEntity{
         this.timeInQueue = timeInQueue;
     }
     
-    public void increaseTimeInQueue(){
+    public void increaseTimeInQueue(){ 
         this.timeInQueue++;
     }
     
+    public int GetExecutionTime(){ //ExecutionTime
+        return this.ExecutionTime;
+    }
     
+    public void SetExecutionTime(int ExecutionTime){ //ExecutionTime
+         this.ExecutionTime = ExecutionTime;
+    }
+
     //-------------------Procedimientos y Metodos-----------------------
 
     @Override

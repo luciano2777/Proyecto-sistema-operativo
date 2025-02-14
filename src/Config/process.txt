@@ -1,3 +1,8 @@
 CPUbound-p3-5-1
 IObound-p4-5-2-2-2
 CPUbound-p10-10-3
+CPUbound-a-5-4
+CPUbound-b-3-5
+CPUbound-Hola-1-6
+CPUbound-ppal-20-7
+CPUbound-Nombre-2-8
