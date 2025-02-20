@@ -174,7 +174,7 @@ public class CPU extends Thread implements ClockListener{
     //----------------procedimientos y Metodos---------------
     @Override
     public void onTick(int tick){
-        if(this.enabled){            
+        if(this.enabled){                    
             this.ticksCounter++;       
             
             if(this.ticksCounter == this.ticksPerInstruction){                           
@@ -182,11 +182,11 @@ public class CPU extends Thread implements ClockListener{
                 switch(cpuStatus){
 
                     case RUN_OS -> {
-                        System.out.println(this + "   Corrinedo SO");            
+                        //System.out.println(this + "   Corrinedo SO");            
                         runOperativeSystem();                    
                     }
                     case RUN_PROCESS -> {            
-                        System.out.println(this + "   " + this.currentProcess);
+                        //System.out.println(this + "   " + this.currentProcess);
                         runProcess();                    
                     }
                     case RUN_IDLE_PROCESS -> {
@@ -211,7 +211,7 @@ public class CPU extends Thread implements ClockListener{
             this.currentPlanningPolicy = OS.getPlanningPolicy();
             
             //Elige el siguiente proceso segun la planificacion
-            this.currentProcess = OS.assignNextProcess();            
+            this.currentProcess = OS.assignNextProcess(this.ID);            
             if(this.currentProcess == null){
                 this.cpuStatus = RUN_IDLE_PROCESS;                
                 return;
@@ -336,7 +336,7 @@ public class CPU extends Thread implements ClockListener{
         try {
             this.semaphore.acquire();
             
-            System.out.println(this + "   Corriendo proceso de espera");
+            //System.out.println(this + "   Corriendo proceso de espera");
             
             OperatingSystem OS = (OperatingSystem) this.mainMemory[0];            
             if(!OS.getScheduler().getReadyQueue().isEmpty()){
@@ -379,7 +379,7 @@ public class CPU extends Thread implements ClockListener{
                 }
             }
 
-            System.out.println("TIEMPO EJECUCION: " + time + " s");
+            //System.out.println("TIEMPO EJECUCION: " + time + " s");
             ExecTimes.enqueue(time);
             isTimeTrackingRunning = false; // Resetea el flag cuando termina el thread
         });

@@ -13,7 +13,7 @@ import DataStructures.Queue;
  */
 public class Scheduler implements ClockListener{
     private List<Process> processList;
-    private List<Process> completedProcessList;
+    private List<Process> completedProcessList;    
     private Queue<Integer> readyQueue;
     private Queue<Integer> blockedQueue;    
     private CPU[] CPUarray;
@@ -21,7 +21,7 @@ public class Scheduler implements ClockListener{
 
     public Scheduler(CPU[] CPUarray, MemoryEntity[] mainMemory) {
         this.processList = new List();
-        this.completedProcessList = new List();
+        this.completedProcessList = new List();        
         this.readyQueue = new Queue();
         this.blockedQueue = new Queue();
         this.CPUarray = CPUarray;
@@ -74,12 +74,10 @@ public class Scheduler implements ClockListener{
 
     public void setCompletedProcessList(List<Process> completedProcessList) {
         this.completedProcessList = completedProcessList;
-    }      
+    }       
     
     
-    
-    
-    public Integer FIFO(){
+    public Integer FIFO(){        
         Integer memoryAdress = readyQueue.dequeue();
         
         //No hay procesos en la cola de listos pero si hay en la cola de bloqueados
@@ -105,9 +103,8 @@ public class Scheduler implements ClockListener{
     }
     
     
-    public Integer SPN(){
-        this.readyQueue = readyQueue.sortShortestProcessQueueSPN(this.mainMemory);           
-        Integer memoryAdress = readyQueue.dequeue();
+    public Integer SPN(){        
+        Integer memoryAdress = readyQueue.dequeueSPN(this.mainMemory);                    
         
         //No hay procesos en la cola de listos pero si hay en la cola de bloqueados
         if(memoryAdress == null && !this.blockedQueue.isEmpty()){ 
@@ -118,9 +115,8 @@ public class Scheduler implements ClockListener{
         }                
     }
     
-    public Integer SRT(){
-        this.readyQueue = readyQueue.sortShortestProcessQueueSRT(this.mainMemory);           
-        Integer memoryAdress = readyQueue.dequeue();
+    public Integer SRT(int numCPU){        
+        Integer memoryAdress = this.readyQueue.dequeueSRT(this.mainMemory);                   
         
         //No hay procesos en la cola de listos pero si hay en la cola de bloqueados
         if(memoryAdress == null && !this.blockedQueue.isEmpty()){ 
@@ -131,9 +127,8 @@ public class Scheduler implements ClockListener{
         }  
     }
     
-    public Integer HRRN(){
-        this.readyQueue = readyQueue.sortShortestProcessQueueHRRN(this.mainMemory);           
-        Integer memoryAdress = readyQueue.dequeue();
+    public Integer HRRN(){                 
+        Integer memoryAdress = readyQueue.dequeueHRRN(this.mainMemory);
         
         //No hay procesos en la cola de listos pero si hay en la cola de bloqueados
         if(memoryAdress == null && !this.blockedQueue.isEmpty()){ 

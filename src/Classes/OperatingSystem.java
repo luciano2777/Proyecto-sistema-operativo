@@ -67,72 +67,51 @@ public class OperatingSystem extends MemoryEntity {
     }
 
     
-    public void createProcessCPUbound(String processName, int numInstructions, int memoryAdress){  
-        ProcessCPUbound process = new ProcessCPUbound(processName, numInstructions, memoryAdress);
-        this.schealuder.getReadyQueue().enqueue(process.getMemoryAdress());
+    public void createProcessCPUbound(int ID, String processName, int numInstructions, int memoryAdress){  
+        ProcessCPUbound process = new ProcessCPUbound(ID, processName, numInstructions, memoryAdress);
+        this.schealuder.getReadyQueue().enqueue(process.getMemoryAdress());        
         this.mainMemory[process.getMemoryAdress()] = process;                             
     }
     
-    public void createProcessIObound(String processName, int numInstructions, int memoryAdress, 
+    public void createProcessIObound(int ID, String processName, int numInstructions, int memoryAdress, 
             int cyclesForException, int cyclesForSuccess){
-        ProcessIObound process = new ProcessIObound(processName, numInstructions, memoryAdress, 
+        ProcessIObound process = new ProcessIObound(ID, processName, numInstructions, memoryAdress, 
                 cyclesForException, cyclesForSuccess);
-        this.schealuder.getReadyQueue().enqueue(process.getMemoryAdress());        
+        this.schealuder.getReadyQueue().enqueue(process.getMemoryAdress());          
         this.mainMemory[process.getMemoryAdress()] = process;                           
     }
         
     
-    public Process assignNextProcess(){                    
+    public Process assignNextProcess(int numCPU){  
+        Integer memoryAdress = null;
+        
         switch(this.planningPolicy){            
             case FCFS -> {                                  
-                Integer memoryAdress = this.schealuder.FIFO();
-                if(memoryAdress == null || memoryAdress == 0){
-                    return null;
-                }
-                Process process = (Process) this.mainMemory[memoryAdress];
-                return process;
+                memoryAdress = this.schealuder.FIFO();
             }
             
             case roundRobin -> {
-                Integer memoryAdress = this.schealuder.RoundRobin();
-                if(memoryAdress == null || memoryAdress == 0){
-                    return null;
-                }
-                Process process = (Process) this.mainMemory[memoryAdress];
-                return process;
+                memoryAdress = this.schealuder.RoundRobin();
             }
             
             case SPN -> {
-                Integer memoryAdress = this.schealuder.SPN();
-                if(memoryAdress == null || memoryAdress == 0){
-                    return null;
-                }
-                Process process = (Process) this.mainMemory[memoryAdress];
-                return process;
+                memoryAdress = this.schealuder.SPN();
             }
             
             case SRT -> {
-                Integer memoryAdress = this.schealuder.SRT();
-                if(memoryAdress == null || memoryAdress == 0){
-                    return null;
-                }
-                Process process = (Process) this.mainMemory[memoryAdress];
-                return process;
+                memoryAdress = this.schealuder.SRT(numCPU);
             }
             
             case HRRN -> {
-                Integer memoryAdress = this.schealuder.HRRN();
-                if(memoryAdress == null || memoryAdress == 0){
-                    return null;
-                }
-                Process process = (Process) this.mainMemory[memoryAdress];
-                return process;
-            }
-            
-            default -> {
-                return null;
-            }
-        }                                    
+                memoryAdress = this.schealuder.HRRN();
+            }                       
+        }
+        
+        if(memoryAdress == null || memoryAdress == 0){
+            return null;
+        }
+        Process process = (Process) this.mainMemory[memoryAdress];
+        return process;
     }  
     
     public void enqueueInReadyQueue(Integer memoryAdress){

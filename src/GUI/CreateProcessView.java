@@ -106,6 +106,7 @@ public class CreateProcessView extends javax.swing.JPanel {
         createdMessage = new javax.swing.JLabel();
 
         jPanel1.setBackground(new java.awt.Color(239, 239, 239));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         CreateProcessLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
@@ -164,6 +165,7 @@ public class CreateProcessView extends javax.swing.JPanel {
         IORequestLabel.setText("Numero de ciclos para generar solicitud de I/O:");
         jPanel1.add(IORequestLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 250, 250, 20));
 
+        CreateButton.setBackground(new java.awt.Color(250, 250, 250));
         CreateButton.setText("Crear!");
         CreateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -177,6 +179,12 @@ public class CreateProcessView extends javax.swing.JPanel {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ticksToRequestIOminusMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ticksToRequestIOminusMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                ticksToRequestIOminusMouseExited(evt);
+            }
         });
         ticksToRequestIOminus.setLayout(new java.awt.GridBagLayout());
 
@@ -189,6 +197,12 @@ public class CreateProcessView extends javax.swing.JPanel {
         ticksToRequestIOplus.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ticksToRequestIOplusMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ticksToRequestIOplusMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                ticksToRequestIOplusMouseExited(evt);
             }
         });
         ticksToRequestIOplus.setLayout(new java.awt.GridBagLayout());
@@ -210,6 +224,12 @@ public class CreateProcessView extends javax.swing.JPanel {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ticksToSatisfyIOplusMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ticksToSatisfyIOplusMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                ticksToSatisfyIOplusMouseExited(evt);
+            }
         });
         ticksToSatisfyIOplus.setLayout(new java.awt.GridBagLayout());
 
@@ -223,6 +243,12 @@ public class CreateProcessView extends javax.swing.JPanel {
         ticksToSatisfyIOminus.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ticksToSatisfyIOminusMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ticksToSatisfyIOminusMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                ticksToSatisfyIOminusMouseExited(evt);
             }
         });
         ticksToSatisfyIOminus.setLayout(new java.awt.GridBagLayout());
@@ -343,6 +369,38 @@ public class CreateProcessView extends javax.swing.JPanel {
         this.simView.drawReadyQueue();
         
     }//GEN-LAST:event_CreateButtonActionPerformed
+
+    private void ticksToRequestIOplusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOplusMouseEntered
+        ticksToRequestIOplus.setBackground(new Color(204, 204, 204));       
+    }//GEN-LAST:event_ticksToRequestIOplusMouseEntered
+
+    private void ticksToRequestIOplusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOplusMouseExited
+        ticksToRequestIOplus.setBackground(new Color(153, 153, 153));
+    }//GEN-LAST:event_ticksToRequestIOplusMouseExited
+
+    private void ticksToRequestIOminusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOminusMouseEntered
+        ticksToRequestIOminus.setBackground(new Color(204, 204, 204));       
+    }//GEN-LAST:event_ticksToRequestIOminusMouseEntered
+
+    private void ticksToRequestIOminusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOminusMouseExited
+        ticksToRequestIOminus.setBackground(new Color(153, 153, 153));    
+    }//GEN-LAST:event_ticksToRequestIOminusMouseExited
+
+    private void ticksToSatisfyIOplusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOplusMouseEntered
+        ticksToSatisfyIOplus.setBackground(new Color(204, 204, 204));    
+    }//GEN-LAST:event_ticksToSatisfyIOplusMouseEntered
+
+    private void ticksToSatisfyIOplusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOplusMouseExited
+        ticksToSatisfyIOplus.setBackground(new Color(153, 153, 153));    
+    }//GEN-LAST:event_ticksToSatisfyIOplusMouseExited
+
+    private void ticksToSatisfyIOminusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOminusMouseEntered
+        ticksToSatisfyIOminus.setBackground(new Color(204, 204, 204));  
+    }//GEN-LAST:event_ticksToSatisfyIOminusMouseEntered
+
+    private void ticksToSatisfyIOminusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOminusMouseExited
+        ticksToSatisfyIOminus.setBackground(new Color(153, 153, 153));
+    }//GEN-LAST:event_ticksToSatisfyIOminusMouseExited
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

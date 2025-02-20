@@ -42,7 +42,7 @@ public class GraficarProceso {
         
         ChartPanel panel=new ChartPanel(grafico);  
         JFrame frame = new JFrame("Gráfica de Rendimiento");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.add(panel);
         frame.pack();
         frame.setSize(800, 600);
@@ -84,7 +84,7 @@ public class GraficarProceso {
 
     ChartPanel panel = new ChartPanel(grafico);
     JFrame frame = new JFrame("Grafica de Rendimiento");
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.add(panel);
     frame.pack();
     frame.setSize(800, 600);

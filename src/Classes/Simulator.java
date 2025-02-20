@@ -19,6 +19,7 @@ public class Simulator {
     private int numCPUenable;
     private int interval;
     private int ticksPerInstruction;
+    private int processCount = 0;
     
 
    /***
@@ -211,7 +212,8 @@ public class Simulator {
     
     public void createProcessCPUbound(String processName, int numInstructions, int memoryAdress){
         if(mainMemory[memoryAdress] != null || memoryAdress != 0){
-            this.operatingSystem.createProcessCPUbound(processName, numInstructions, memoryAdress);                    
+            this.operatingSystem.createProcessCPUbound(processCount, processName, numInstructions, memoryAdress); 
+            processCount++;
         }
         else{
             System.err.println("Area de memoria no disponible");
@@ -223,8 +225,9 @@ public class Simulator {
     public void createProcessIObound(String processName, int numInstructions, int memoryAdress,
             int ticksToInterrupt, int ticksToSuccess){        
         if(mainMemory[memoryAdress] != null || memoryAdress != 0){
-            this.operatingSystem.createProcessIObound(processName, numInstructions, memoryAdress, 
-                    ticksToInterrupt, ticksToSuccess);                   
+            this.operatingSystem.createProcessIObound(processCount, processName, numInstructions, memoryAdress, 
+                    ticksToInterrupt, ticksToSuccess);
+            processCount++;
         }
         else{
             System.err.println("Area de memoria no disponible");

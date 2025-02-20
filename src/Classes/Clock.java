@@ -63,7 +63,7 @@ public class Clock extends Thread{
     }
 
     public void setStatus(int status) {
-        if(status == 0 || status == 1 || status == 2){
+        if(status == 0 || status == 1 || status == 2 || status == 3){
             this.status = status;  
             if(this.status == RUNNING){
                 semaphore.release();
@@ -127,19 +127,18 @@ public class Clock extends Thread{
     
     @Override
     public void run() {
-    while (this.status != FINISHED) {
-        if (this.status == RUNNING) {
-            tick();     
-            System.out.println("");
-        } else if (this.status == PAUSED) {
-            try {
-                // El hilo espera a que el semáforo se libere para continuar ejecutando
-                this.semaphore.acquire();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }                                            
-    }
+        while (this.status != FINISHED) {
+            if (this.status == RUNNING) {                
+                tick();                     
+            } else if (this.status == PAUSED) {
+                try {
+                    // El hilo espera a que el semáforo se libere para continuar ejecutando
+                    this.semaphore.acquire();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }                                            
+        }        
 }
 
 

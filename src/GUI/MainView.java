@@ -6,6 +6,7 @@ package GUI;
 
 import Classes.GraficarProceso;
 import Classes.Simulator;
+import DataStructures.List;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -16,6 +17,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JToggleButton;
+import javax.swing.plaf.metal.MetalToggleButtonUI;
 
 /**
  *
@@ -33,16 +36,27 @@ public class MainView extends javax.swing.JFrame {
      */
     public MainView() {
         initComponents();
-        String[] settings = loadSettings();
-        if(settings[0].isBlank()){
-            this.simulator = new Simulator(3, 1000, 1);  
-        }
-        else{
-            this.simulator = new Simulator(Integer.parseInt(settings[0]), Integer.parseInt(settings[1]), Integer.parseInt(settings[2]));              
-        }
+        initLookAndFeel();
+        this.setLocationRelativeTo(null);
+        
+        this.simulator = initSimulator();        
         this.simView = new SimulationView(this.simulator);
+        
         this.setVisible(true);
         initView();                
+    }
+    
+    private Simulator initSimulator(){
+        String[] settings = loadSettings();
+        Simulator sim = null;
+        
+        if(settings[0].isBlank()){
+            sim = new Simulator(3, 1000, 1);  
+        }
+        else{
+            sim = new Simulator(Integer.parseInt(settings[0]), Integer.parseInt(settings[1]), Integer.parseInt(settings[2]));              
+        }
+        return sim;
     }
             
     
@@ -80,9 +94,9 @@ public class MainView extends javax.swing.JFrame {
     private void initView(){
         buttonGroup.add(createProcessButton);
         buttonGroup.add(settingsButton);
-        buttonGroup.add(SimulationButton);
+        buttonGroup.add(simulationButton);
         
-        SimulationButton.setSelected(true);
+        simulationButton.setSelected(true);
         
           
         simView.setSize(970, 510);
@@ -91,6 +105,20 @@ public class MainView extends javax.swing.JFrame {
         bodyPanel.add(simView, BorderLayout.CENTER);
         bodyPanel.revalidate();
         bodyPanel.repaint();
+    }
+    
+    private void initLookAndFeel(){
+        List<JToggleButton> buttonsList = new List(simulationButton, createProcessButton, settingsButton);
+        
+        for (int i = 0; i < buttonsList.getSize(); i++) {
+            JToggleButton btn = buttonsList.get(i);
+            btn.setUI(new MetalToggleButtonUI() {
+                @Override
+                protected Color getSelectColor() {
+                    return new Color(255, 153, 51);                    
+                }
+            });
+        }
     }
 
     /**
@@ -112,11 +140,11 @@ public class MainView extends javax.swing.JFrame {
         leftPanel = new javax.swing.JPanel();
         createProcessButton = new javax.swing.JToggleButton();
         pauseButton = new javax.swing.JButton();
-        finishButton = new javax.swing.JButton();
+        restartButton = new javax.swing.JButton();
         startButton = new javax.swing.JButton();
         settingsButton = new javax.swing.JToggleButton();
-        SimulationButton = new javax.swing.JToggleButton();
-        jButton1 = new javax.swing.JButton();
+        simulationButton = new javax.swing.JToggleButton();
+        graphicButton = new javax.swing.JButton();
         bodyPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -127,6 +155,7 @@ public class MainView extends javax.swing.JFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         topPanel.setBackground(new java.awt.Color(255, 255, 255));
+        topPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 0, 1, new java.awt.Color(0, 0, 0)));
         topPanel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 topPanelMouseDragged(evt);
@@ -140,6 +169,7 @@ public class MainView extends javax.swing.JFrame {
         topPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         closeButton.setBackground(new java.awt.Color(255, 255, 255));
+        closeButton.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 1, new java.awt.Color(0, 0, 0)));
         closeButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 closeButtonMouseClicked(evt);
@@ -159,6 +189,7 @@ public class MainView extends javax.swing.JFrame {
         topPanel.add(closeButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(1040, 0, 30, 30));
 
         minimizeButton.setBackground(new java.awt.Color(255, 255, 255));
+        minimizeButton.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(0, 0, 0)));
         minimizeButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 minimizeButtonMouseClicked(evt);
@@ -181,10 +212,21 @@ public class MainView extends javax.swing.JFrame {
         jPanel1.add(topPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1070, 30));
 
         leftPanel.setBackground(new java.awt.Color(204, 204, 204));
+        leftPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 0, new java.awt.Color(0, 0, 0)));
         leftPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        createProcessButton.setBackground(new java.awt.Color(250, 250, 250));
         createProcessButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         createProcessButton.setText("Crear Proceso");
+        createProcessButton.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 0, 0, new java.awt.Color(0, 0, 0)));
+        createProcessButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                createProcessButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                createProcessButtonMouseExited(evt);
+            }
+        });
         createProcessButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 createProcessButtonActionPerformed(evt);
@@ -192,19 +234,28 @@ public class MainView extends javax.swing.JFrame {
         });
         leftPanel.add(createProcessButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 50, 100, 50));
 
+        pauseButton.setBackground(new java.awt.Color(250, 250, 250));
         pauseButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         pauseButton.setText("Parar");
+        pauseButton.setEnabled(false);
         pauseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pauseButtonActionPerformed(evt);
             }
         });
-        leftPanel.add(pauseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 450, 80, -1));
+        leftPanel.add(pauseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 80, -1));
 
-        finishButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        finishButton.setText("Reiniciar");
-        leftPanel.add(finishButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 480, 80, -1));
+        restartButton.setBackground(new java.awt.Color(250, 250, 250));
+        restartButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        restartButton.setText("Reiniciar");
+        restartButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                restartButtonActionPerformed(evt);
+            }
+        });
+        leftPanel.add(restartButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 450, 80, -1));
 
+        startButton.setBackground(new java.awt.Color(250, 250, 250));
         startButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         startButton.setText("Iniciar ");
         startButton.addActionListener(new java.awt.event.ActionListener() {
@@ -212,10 +263,20 @@ public class MainView extends javax.swing.JFrame {
                 startButtonActionPerformed(evt);
             }
         });
-        leftPanel.add(startButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 80, -1));
+        leftPanel.add(startButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 390, 80, -1));
 
+        settingsButton.setBackground(new java.awt.Color(250, 250, 250));
         settingsButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
         settingsButton.setText("Configuracion");
+        settingsButton.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 0, new java.awt.Color(0, 0, 0)));
+        settingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                settingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                settingsButtonMouseExited(evt);
+            }
+        });
         settingsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 settingsButtonActionPerformed(evt);
@@ -223,22 +284,34 @@ public class MainView extends javax.swing.JFrame {
         });
         leftPanel.add(settingsButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 100, 100, 50));
 
-        SimulationButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        SimulationButton.setText("Simulacion");
-        SimulationButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SimulationButtonActionPerformed(evt);
+        simulationButton.setBackground(new java.awt.Color(250, 250, 250));
+        simulationButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        simulationButton.setText("Simulacion");
+        simulationButton.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 0, 0, new java.awt.Color(0, 0, 0)));
+        simulationButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                simulationButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                simulationButtonMouseExited(evt);
             }
         });
-        leftPanel.add(SimulationButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 50));
+        simulationButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simulationButtonActionPerformed(evt);
+            }
+        });
+        leftPanel.add(simulationButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 50));
 
-        jButton1.setText("Ver Grafico");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        graphicButton.setBackground(new java.awt.Color(250, 250, 250));
+        graphicButton.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        graphicButton.setText("Ver Grafico");
+        graphicButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                graphicButtonActionPerformed(evt);
             }
         });
-        leftPanel.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, -1, 20));
+        leftPanel.add(graphicButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 480, 80, 20));
 
         jPanel1.add(leftPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, -1, 510));
 
@@ -267,6 +340,7 @@ public class MainView extends javax.swing.JFrame {
 
     private void closeButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closeButtonMouseClicked
         this.dispose();
+        simulator.finishSimulation();
         closeButton.setBackground(Color.white);
         closeLabel.setForeground(Color.black);
     }//GEN-LAST:event_closeButtonMouseClicked
@@ -312,6 +386,8 @@ public class MainView extends javax.swing.JFrame {
         bodyPanel.add(createProcessView, BorderLayout.CENTER);
         bodyPanel.revalidate();
         bodyPanel.repaint();
+        settingsButton.setBackground(new Color(250, 250, 250));
+        simulationButton.setBackground(new Color(250, 250, 250));
     }//GEN-LAST:event_createProcessButtonActionPerformed
 
     private void settingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsButtonActionPerformed
@@ -324,9 +400,11 @@ public class MainView extends javax.swing.JFrame {
         bodyPanel.add(settingsView, BorderLayout.CENTER);
         bodyPanel.revalidate();
         bodyPanel.repaint();
+        simulationButton.setBackground(new Color(250, 250, 250));
+        createProcessButton.setBackground(new Color(250, 250, 250));
     }//GEN-LAST:event_settingsButtonActionPerformed
 
-    private void SimulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SimulationButtonActionPerformed
+    private void simulationButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simulationButtonActionPerformed
         simView.setSize(970, 510);
         simView.setLocation(0, 0);
         
@@ -334,23 +412,83 @@ public class MainView extends javax.swing.JFrame {
         bodyPanel.add(simView, BorderLayout.CENTER);
         bodyPanel.revalidate();
         bodyPanel.repaint();
-    }//GEN-LAST:event_SimulationButtonActionPerformed
+        createProcessButton.setBackground(new Color(250, 250, 250));
+        settingsButton.setBackground(new Color(250, 250, 250));
+    }//GEN-LAST:event_simulationButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         startButton.setText("Resumir");
         simulator.startSimulation();                    
-        startButton.setEnabled(false);            
+        startButton.setEnabled(false); 
+        pauseButton.setEnabled(true);
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void pauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseButtonActionPerformed
         simulator.stopSimulation();
+        pauseButton.setEnabled(false);
         startButton.setEnabled(true);
     }//GEN-LAST:event_pauseButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void graphicButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_graphicButtonActionPerformed
         // TODO add your handling code here:
         GraficarProceso.RecibirCPUArray(simulator.getCPUarray() );
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_graphicButtonActionPerformed
+
+    private void simulationButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_simulationButtonMouseEntered
+        if(!simulationButton.isSelected()){
+            simulationButton.setBackground(new Color(255, 194, 133));
+        }
+    }//GEN-LAST:event_simulationButtonMouseEntered
+
+    private void simulationButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_simulationButtonMouseExited
+        if(!simulationButton.isSelected()){
+            simulationButton.setBackground(new Color(250, 250, 250));
+        }
+    }//GEN-LAST:event_simulationButtonMouseExited
+
+    private void createProcessButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createProcessButtonMouseEntered
+        if(!createProcessButton.isSelected()){
+            createProcessButton.setBackground(new Color(255, 194, 133));
+        }
+    }//GEN-LAST:event_createProcessButtonMouseEntered
+
+    private void createProcessButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createProcessButtonMouseExited
+        if(!createProcessButton.isSelected()){
+            createProcessButton.setBackground(new Color(250, 250, 250));
+        }
+    }//GEN-LAST:event_createProcessButtonMouseExited
+
+    private void settingsButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingsButtonMouseEntered
+        if(!settingsButton.isSelected()){
+            settingsButton.setBackground(new Color(255, 194, 133));
+        }
+    }//GEN-LAST:event_settingsButtonMouseEntered
+
+    private void settingsButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_settingsButtonMouseExited
+        if(!settingsButton.isSelected()){
+            settingsButton.setBackground(new Color(250, 250, 250));
+        }
+    }//GEN-LAST:event_settingsButtonMouseExited
+
+    private void restartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartButtonActionPerformed
+        startButton.setText("Iniciar");
+        startButton.setEnabled(true); 
+        pauseButton.setEnabled(false);                            
+        
+        this.simulator.finishSimulation();
+        this.simulator = initSimulator();
+        
+        simView = new SimulationView(this.simulator);
+        simView.setSize(970, 510);
+        simView.setLocation(0, 0);
+        
+        bodyPanel.removeAll();
+        bodyPanel.add(simView, BorderLayout.CENTER);
+        bodyPanel.revalidate();
+        bodyPanel.repaint();
+        createProcessButton.setBackground(new Color(250, 250, 250));
+        settingsButton.setBackground(new Color(250, 250, 250));
+    }//GEN-LAST:event_restartButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -388,20 +526,20 @@ public class MainView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton SimulationButton;
     private javax.swing.JPanel bodyPanel;
     private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JPanel closeButton;
     private javax.swing.JLabel closeLabel;
     private javax.swing.JToggleButton createProcessButton;
-    private javax.swing.JButton finishButton;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton graphicButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JPanel minimizeButton;
     private javax.swing.JLabel minimizeLabel;
     private javax.swing.JButton pauseButton;
+    private javax.swing.JButton restartButton;
     private javax.swing.JToggleButton settingsButton;
+    private javax.swing.JToggleButton simulationButton;
     private javax.swing.JButton startButton;
     private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables

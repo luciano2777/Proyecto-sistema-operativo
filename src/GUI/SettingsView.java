@@ -5,6 +5,7 @@
 package GUI;
 
 import Classes.Simulator;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -73,6 +74,7 @@ public class SettingsView extends javax.swing.JPanel {
         saveMessage = new javax.swing.JLabel();
 
         jPanel1.setBackground(new java.awt.Color(239, 239, 239));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         settingsLabel.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
@@ -88,6 +90,7 @@ public class SettingsView extends javax.swing.JPanel {
         jLabel3.setText("Ciclos por instruccion");
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 250, -1, -1));
 
+        saveButton.setBackground(new java.awt.Color(250, 250, 250));
         saveButton.setText("Guardar");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -117,6 +120,12 @@ public class SettingsView extends javax.swing.JPanel {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 numCPUplusMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                numCPUplusMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                numCPUplusMouseExited(evt);
+            }
         });
         numCPUplus.setLayout(new java.awt.GridBagLayout());
 
@@ -130,6 +139,12 @@ public class SettingsView extends javax.swing.JPanel {
         numCPUminus.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 numCPUminusMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                numCPUminusMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                numCPUminusMouseExited(evt);
             }
         });
         numCPUminus.setLayout(new java.awt.GridBagLayout());
@@ -147,6 +162,12 @@ public class SettingsView extends javax.swing.JPanel {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ticksPerInstructionPlusMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ticksPerInstructionPlusMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                ticksPerInstructionPlusMouseExited(evt);
+            }
         });
         ticksPerInstructionPlus.setLayout(new java.awt.GridBagLayout());
 
@@ -160,6 +181,12 @@ public class SettingsView extends javax.swing.JPanel {
         ticksPerInstructionMinus.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ticksPerInstructionMinusMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ticksPerInstructionMinusMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                ticksPerInstructionMinusMouseExited(evt);
             }
         });
         ticksPerInstructionMinus.setLayout(new java.awt.GridBagLayout());
@@ -178,11 +205,11 @@ public class SettingsView extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 970, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 982, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -243,6 +270,38 @@ public class SettingsView extends javax.swing.JPanel {
             ticksPerInstructionLabel.setText(Integer.toString(Integer.parseInt(ticksPerInstructionLabel.getText()) - 1));            
         }
     }//GEN-LAST:event_ticksPerInstructionMinusMouseClicked
+
+    private void numCPUplusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_numCPUplusMouseEntered
+        numCPUplus.setBackground(new Color(204, 204, 204)); 
+    }//GEN-LAST:event_numCPUplusMouseEntered
+
+    private void numCPUplusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_numCPUplusMouseExited
+        numCPUplus.setBackground(new Color(153, 153, 153));
+    }//GEN-LAST:event_numCPUplusMouseExited
+
+    private void numCPUminusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_numCPUminusMouseEntered
+        numCPUminus.setBackground(new Color(204, 204, 204));
+    }//GEN-LAST:event_numCPUminusMouseEntered
+
+    private void numCPUminusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_numCPUminusMouseExited
+        numCPUminus.setBackground(new Color(153, 153, 153));
+    }//GEN-LAST:event_numCPUminusMouseExited
+
+    private void ticksPerInstructionPlusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksPerInstructionPlusMouseEntered
+        ticksPerInstructionPlus.setBackground(new Color(204, 204, 204));
+    }//GEN-LAST:event_ticksPerInstructionPlusMouseEntered
+
+    private void ticksPerInstructionPlusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksPerInstructionPlusMouseExited
+        ticksPerInstructionPlus.setBackground(new Color(153, 153, 153));
+    }//GEN-LAST:event_ticksPerInstructionPlusMouseExited
+
+    private void ticksPerInstructionMinusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksPerInstructionMinusMouseEntered
+        ticksPerInstructionMinus.setBackground(new Color(204, 204, 204));
+    }//GEN-LAST:event_ticksPerInstructionMinusMouseEntered
+
+    private void ticksPerInstructionMinusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksPerInstructionMinusMouseExited
+        ticksPerInstructionMinus.setBackground(new Color(153, 153, 153));
+    }//GEN-LAST:event_ticksPerInstructionMinusMouseExited
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

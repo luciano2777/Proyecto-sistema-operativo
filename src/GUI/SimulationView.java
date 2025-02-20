@@ -13,6 +13,7 @@ import Classes.Simulator;
 import Classes.Process;
 import Classes.ProcessCPUbound;
 import Classes.ProcessIObound;
+import Classes.Util;
 import DataStructures.List;
 import DataStructures.Queue;
 import java.awt.Color;
@@ -23,6 +24,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JToggleButton;
+import javax.swing.plaf.metal.MetalToggleButtonUI;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -37,6 +41,7 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
      */
     public SimulationView(Simulator simulator) {
         initComponents();
+        initLookAndFeel();
         this.simulator = simulator;    
         this.simulator.getClock().getClockListeners().append(this);
         
@@ -47,9 +52,14 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
         buttonGroup.add(HRRNbutton);
         FCFSbutton.setSelected(true);
         
+        initQueue();
         loadProcess();
         drawReadyQueue();   
         initCPUs();        
+    }
+    
+    public void initQueue(){
+        
     }
     
     public void initCPUs(){
@@ -147,7 +157,7 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
                         nameCpu1.setText("Name=" + cpu1.getCurrentProcess().getName());
                         pcCpu1.setText("PC=" + cpu1.getCurrentProcess().getPC());
                         marCpu1.setText("MAR=" + cpu1.getCurrentProcess().getMAR());
-                        statusCpu1.setText("Status=" + cpu1.getCurrentProcess().getStatus());            
+                        statusCpu1.setText("Status=" + Util.getStatusStr(cpu1.getCurrentProcess().getStatus()));            
                         SO1.setText("");
                     }
                 }            
@@ -177,7 +187,7 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
                         nameCpu2.setText("Name=" + cpu2.getCurrentProcess().getName());
                         pcCpu2.setText("PC=" + cpu2.getCurrentProcess().getPC());
                         marCpu2.setText("MAR=" + cpu2.getCurrentProcess().getMAR());
-                        statusCpu2.setText("Status=" + cpu2.getCurrentProcess().getStatus());            
+                        statusCpu2.setText("Status=" + Util.getStatusStr(cpu2.getCurrentProcess().getStatus()));            
                         SO2.setText("");
                     }
                 }            
@@ -207,7 +217,7 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
                         nameCpu3.setText("Name=" + cpu3.getCurrentProcess().getName());
                         pcCpu3.setText("PC=" + cpu3.getCurrentProcess().getPC());
                         marCpu3.setText("MAR=" + cpu3.getCurrentProcess().getMAR());
-                        statusCpu3.setText("Status=" + cpu3.getCurrentProcess().getStatus());            
+                        statusCpu3.setText("Status=" + Util.getStatusStr(cpu3.getCurrentProcess().getStatus()));            
                         SO3.setText("");
                     }
                 }            
@@ -219,50 +229,74 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
     }
     
     public void drawReadyQueue(){
-        Queue<Integer> readyQueue = simulator.getOperatingSystem().getScheduler().getReadyQueue();
+        Queue<Integer> readyQueue = simulator.getOperatingSystem().getScheduler().getReadyQueue();        
         
-        int size = readyQueue.getSize();     
-        String str = "";
+        int size = readyQueue.getSize();  
+        
+        DefaultTableModel model = (DefaultTableModel) readyQueueArea.getModel();
+        model.setRowCount(0);
         for (int i = 0; i < size; i++) {
             MemoryEntity[] mainMemory = simulator.getOperatingSystem().getMainMemory();
             
             Integer memoryAdress = readyQueue.dequeue();
                         
             Process process = (Process) mainMemory[memoryAdress];
-            str += process.toString() + "\n";
+            
+            model.addRow(new Object[]{
+                process.getID(),
+                process.getName(),
+                process.getPC(),
+                process.getMAR(),
+                Util.getStatusStr(process.getStatus())
+            });           
+            
             
             readyQueue.enqueue(memoryAdress);
-        }                
-        readyQueueArea.setText(str);            
+        }                      
     }
     
     public void drawBlockedQueue(){
-        Queue<Integer> blockedQueue = simulator.getOperatingSystem().getScheduler().getBlockedQueue();
-        System.out.println(blockedQueue);
+        Queue<Integer> blockedQueue = simulator.getOperatingSystem().getScheduler().getBlockedQueue();        
         
-        int size = blockedQueue.getSize();     
-        String str = "";
+        int size = blockedQueue.getSize();             
+        
+        DefaultTableModel model = (DefaultTableModel) blockedQueueArea.getModel();
+        model.setRowCount(0);
         for (int i = 0; i < size; i++) {
             MemoryEntity[] mainMemory = simulator.getOperatingSystem().getMainMemory();
             
             Integer memoryAdress = blockedQueue.dequeue();
                         
             Process process = (Process) mainMemory[memoryAdress];
-            str += process.toString() + "\n";
             
+            model.addRow(new Object[]{
+                process.getID(),
+                process.getName(),
+                process.getPC(),
+                process.getMAR(),
+                Util.getStatusStr(process.getStatus())
+            });
+                                    
             blockedQueue.enqueue(memoryAdress);
-        }                
-        blockedQueueArea.setText(str); 
+        }                        
     }
     
     public void drawCompletedProcessList(){
         List<Process> completedProcessList = this.simulator.getOperatingSystem().getScheduler().getCompletedProcessList();
-        
-        String str = "";
+                
+        DefaultTableModel model = (DefaultTableModel) completedProcessArea.getModel();
+        model.setRowCount(0);
         for (int i = 0; i < completedProcessList.getSize(); i++) {
-            str += completedProcessList.get(i).toString() + "\n";
-        }
-        this.completedProcessListArea.setText(str);
+            Process process = completedProcessList.get(i);
+            
+            model.addRow(new Object[]{
+                process.getID(),
+                process.getName(),
+                process.getPC(),
+                process.getMAR(),
+                Util.getStatusStr(process.getStatus())
+            });
+        }        
     }
     
     
@@ -294,20 +328,22 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
         }            
         else{            
             progressBar3.setValue(0);
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        }        
     }
     
+    private void initLookAndFeel(){
+        List<JToggleButton> buttonsList = new List(FCFSbutton, RRbutton, SPNbutton, SRTbutton, HRRNbutton);
+        
+        for (int i = 0; i < buttonsList.getSize(); i++) {
+            JToggleButton btn = buttonsList.get(i);
+            btn.setUI(new MetalToggleButtonUI() {
+                @Override
+                protected Color getSelectColor() {
+                    return new Color(255, 153, 51);                    
+                }
+            });
+        }
+    }
     
     @Override
     public void onTick(int tick) { 
@@ -361,26 +397,32 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        completedProcessListArea = new javax.swing.JTextArea();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        readyQueueArea = new javax.swing.JTextArea();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        blockedQueueArea = new javax.swing.JTextArea();
         tick = new javax.swing.JLabel();
         FCFSbutton = new javax.swing.JToggleButton();
         RRbutton = new javax.swing.JToggleButton();
         SPNbutton = new javax.swing.JToggleButton();
         SRTbutton = new javax.swing.JToggleButton();
         HRRNbutton = new javax.swing.JToggleButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        completedProcessArea = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        readyQueueArea = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        blockedQueueArea = new javax.swing.JTable();
 
         jLabel7.setText("jLabel7");
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         CPU1Panel.setBackground(new java.awt.Color(255, 255, 255));
         CPU1Panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         CPU1Panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        progressBar1.setBackground(new java.awt.Color(255, 255, 255));
+        progressBar1.setForeground(new java.awt.Color(255, 153, 51));
+        progressBar1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        progressBar1.setEnabled(false);
         CPU1Panel.add(progressBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 120, 10));
 
         marCpu1.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
@@ -412,6 +454,10 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
         CPU2Panel.setBackground(new java.awt.Color(255, 255, 255));
         CPU2Panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         CPU2Panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        progressBar2.setBackground(new java.awt.Color(255, 255, 255));
+        progressBar2.setForeground(new java.awt.Color(255, 153, 51));
+        progressBar2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         CPU2Panel.add(progressBar2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 120, 10));
 
         idCpu2.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
@@ -443,6 +489,10 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
         CPU3Panel.setBackground(new java.awt.Color(255, 255, 255));
         CPU3Panel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         CPU3Panel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        progressBar3.setBackground(new java.awt.Color(255, 255, 255));
+        progressBar3.setForeground(new java.awt.Color(255, 153, 51));
+        progressBar3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         CPU3Panel.add(progressBar3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, 120, 10));
 
         marCpu3.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
@@ -489,31 +539,20 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
         jLabel6.setText("CPU3");
         jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, 60, 20));
 
-        completedProcessListArea.setColumns(20);
-        completedProcessListArea.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        completedProcessListArea.setRows(5);
-        jScrollPane4.setViewportView(completedProcessListArea);
-
-        jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 60, 250, 370));
-
-        readyQueueArea.setColumns(20);
-        readyQueueArea.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        readyQueueArea.setRows(5);
-        jScrollPane5.setViewportView(readyQueueArea);
-
-        jPanel1.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 60, 240, 370));
-
-        blockedQueueArea.setColumns(20);
-        blockedQueueArea.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        blockedQueueArea.setRows(5);
-        jScrollPane6.setViewportView(blockedQueueArea);
-
-        jPanel1.add(jScrollPane6, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 60, 250, 370));
-
         tick.setText("Ciclo: 0");
         jPanel1.add(tick, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 480, -1, -1));
 
+        FCFSbutton.setBackground(new java.awt.Color(250, 250, 250));
         FCFSbutton.setText("FCFS");
+        FCFSbutton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        FCFSbutton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                FCFSbuttonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                FCFSbuttonMouseExited(evt);
+            }
+        });
         FCFSbutton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 FCFSbuttonActionPerformed(evt);
@@ -521,15 +560,35 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
         });
         jPanel1.add(FCFSbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 460, 100, 30));
 
+        RRbutton.setBackground(new java.awt.Color(250, 250, 250));
         RRbutton.setText("Round Robin");
+        RRbutton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        RRbutton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                RRbuttonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                RRbuttonMouseExited(evt);
+            }
+        });
         RRbutton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 RRbuttonActionPerformed(evt);
             }
         });
-        jPanel1.add(RRbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 460, -1, 30));
+        jPanel1.add(RRbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 460, 100, 30));
 
+        SPNbutton.setBackground(new java.awt.Color(250, 250, 250));
         SPNbutton.setText("SPN");
+        SPNbutton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        SPNbutton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                SPNbuttonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                SPNbuttonMouseExited(evt);
+            }
+        });
         SPNbutton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SPNbuttonActionPerformed(evt);
@@ -537,7 +596,17 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
         });
         jPanel1.add(SPNbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 460, 100, 30));
 
+        SRTbutton.setBackground(new java.awt.Color(250, 250, 250));
         SRTbutton.setText("SRT");
+        SRTbutton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        SRTbutton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                SRTbuttonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                SRTbuttonMouseExited(evt);
+            }
+        });
         SRTbutton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SRTbuttonActionPerformed(evt);
@@ -545,13 +614,65 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
         });
         jPanel1.add(SRTbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 460, 100, 30));
 
+        HRRNbutton.setBackground(new java.awt.Color(250, 250, 250));
         HRRNbutton.setText("HRRN");
+        HRRNbutton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        HRRNbutton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                HRRNbuttonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                HRRNbuttonMouseExited(evt);
+            }
+        });
         HRRNbutton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 HRRNbuttonActionPerformed(evt);
             }
         });
         jPanel1.add(HRRNbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 460, 100, 30));
+
+        completedProcessArea.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        completedProcessArea.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Name", "PC", "MAR", "Status"
+            }
+        ));
+        completedProcessArea.setEnabled(false);
+        jScrollPane1.setViewportView(completedProcessArea);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 60, 250, 370));
+
+        readyQueueArea.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        readyQueueArea.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Name", "PC", "MAR", "Status"
+            }
+        ));
+        readyQueueArea.setEnabled(false);
+        jScrollPane2.setViewportView(readyQueueArea);
+
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 60, 250, 370));
+
+        blockedQueueArea.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        blockedQueueArea.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Name", "PC", "MAR", "Status"
+            }
+        ));
+        blockedQueueArea.setEnabled(false);
+        jScrollPane3.setViewportView(blockedQueueArea);
+
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 60, 250, 370));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -567,23 +688,103 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
 
     private void FCFSbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FCFSbuttonActionPerformed
         simulator.getOperatingSystem().setPlanningPolicy(OperatingSystem.FCFS);
+        RRbutton.setBackground(new Color(250, 250, 250));
+        SPNbutton.setBackground(new Color(250, 250, 250));
+        SRTbutton.setBackground(new Color(250, 250, 250));
+        HRRNbutton.setBackground(new Color(250, 250, 250));
     }//GEN-LAST:event_FCFSbuttonActionPerformed
 
     private void RRbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RRbuttonActionPerformed
         simulator.getOperatingSystem().setPlanningPolicy(OperatingSystem.roundRobin);
+        FCFSbutton.setBackground(new Color(250, 250, 250));
+        SPNbutton.setBackground(new Color(250, 250, 250));
+        SRTbutton.setBackground(new Color(250, 250, 250));
+        HRRNbutton.setBackground(new Color(250, 250, 250));
     }//GEN-LAST:event_RRbuttonActionPerformed
 
     private void SPNbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SPNbuttonActionPerformed
         simulator.getOperatingSystem().setPlanningPolicy(OperatingSystem.SPN);
+        FCFSbutton.setBackground(new Color(250, 250, 250));
+        RRbutton.setBackground(new Color(250, 250, 250));
+        SRTbutton.setBackground(new Color(250, 250, 250));
+        HRRNbutton.setBackground(new Color(250, 250, 250));
     }//GEN-LAST:event_SPNbuttonActionPerformed
 
     private void SRTbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SRTbuttonActionPerformed
         simulator.getOperatingSystem().setPlanningPolicy(OperatingSystem.SRT);
+        FCFSbutton.setBackground(new Color(250, 250, 250));
+        RRbutton.setBackground(new Color(250, 250, 250));
+        SPNbutton.setBackground(new Color(250, 250, 250));
+        HRRNbutton.setBackground(new Color(250, 250, 250));
     }//GEN-LAST:event_SRTbuttonActionPerformed
 
     private void HRRNbuttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HRRNbuttonActionPerformed
         simulator.getOperatingSystem().setPlanningPolicy(OperatingSystem.HRRN);
+        FCFSbutton.setBackground(new Color(250, 250, 250));
+        RRbutton.setBackground(new Color(250, 250, 250));
+        SPNbutton.setBackground(new Color(250, 250, 250));
+        SRTbutton.setBackground(new Color(250, 250, 250));
     }//GEN-LAST:event_HRRNbuttonActionPerformed
+
+    private void FCFSbuttonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FCFSbuttonMouseEntered
+        if(!FCFSbutton.isSelected()){
+            FCFSbutton.setBackground(new Color(255, 194, 133));            
+        }
+    }//GEN-LAST:event_FCFSbuttonMouseEntered
+
+    private void FCFSbuttonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_FCFSbuttonMouseExited
+        if(!FCFSbutton.isSelected()){
+            FCFSbutton.setBackground(new Color(250, 250, 250));            
+        }
+    }//GEN-LAST:event_FCFSbuttonMouseExited
+
+    private void RRbuttonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RRbuttonMouseEntered
+        if(!RRbutton.isSelected()){
+            RRbutton.setBackground(new Color(255, 194, 133));            
+        }
+    }//GEN-LAST:event_RRbuttonMouseEntered
+
+    private void RRbuttonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RRbuttonMouseExited
+        if(!RRbutton.isSelected()){
+            RRbutton.setBackground(new Color(250, 250, 250));            
+        }
+    }//GEN-LAST:event_RRbuttonMouseExited
+
+    private void SPNbuttonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SPNbuttonMouseEntered
+        if(!SPNbutton.isSelected()){
+            SPNbutton.setBackground(new Color(255, 194, 133));            
+        }
+    }//GEN-LAST:event_SPNbuttonMouseEntered
+
+    private void SPNbuttonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SPNbuttonMouseExited
+        if(!SPNbutton.isSelected()){
+            SPNbutton.setBackground(new Color(250, 250, 250));            
+        }
+    }//GEN-LAST:event_SPNbuttonMouseExited
+
+    private void SRTbuttonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SRTbuttonMouseEntered
+        if(!SRTbutton.isSelected()){
+            SRTbutton.setBackground(new Color(255, 194, 133));            
+        }
+    }//GEN-LAST:event_SRTbuttonMouseEntered
+
+    private void SRTbuttonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SRTbuttonMouseExited
+        if(!SRTbutton.isSelected()){
+            SRTbutton.setBackground(new Color(250, 250, 250));            
+        }
+    }//GEN-LAST:event_SRTbuttonMouseExited
+
+    private void HRRNbuttonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HRRNbuttonMouseEntered
+        if(!HRRNbutton.isSelected()){
+            HRRNbutton.setBackground(new Color(255, 194, 133));            
+        }
+    }//GEN-LAST:event_HRRNbuttonMouseEntered
+
+    private void HRRNbuttonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HRRNbuttonMouseExited
+        if(!HRRNbutton.isSelected()){
+            HRRNbutton.setBackground(new Color(250, 250, 250));            
+        }
+    }//GEN-LAST:event_HRRNbuttonMouseExited
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -598,9 +799,9 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
     private javax.swing.JLabel SO3;
     private javax.swing.JToggleButton SPNbutton;
     private javax.swing.JToggleButton SRTbutton;
-    private javax.swing.JTextArea blockedQueueArea;
+    private javax.swing.JTable blockedQueueArea;
     private javax.swing.ButtonGroup buttonGroup;
-    private javax.swing.JTextArea completedProcessListArea;
+    private javax.swing.JTable completedProcessArea;
     private javax.swing.JLabel idCpu1;
     private javax.swing.JLabel idCpu2;
     private javax.swing.JLabel idCpu3;
@@ -612,9 +813,9 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel marCpu1;
     private javax.swing.JLabel marCpu2;
     private javax.swing.JLabel marCpu3;
@@ -627,7 +828,7 @@ public class SimulationView extends javax.swing.JPanel implements ClockListener 
     private javax.swing.JProgressBar progressBar1;
     private javax.swing.JProgressBar progressBar2;
     private javax.swing.JProgressBar progressBar3;
-    private javax.swing.JTextArea readyQueueArea;
+    private javax.swing.JTable readyQueueArea;
     private javax.swing.JLabel statusCpu1;
     private javax.swing.JLabel statusCpu2;
     private javax.swing.JLabel statusCpu3;
