@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import Classes.GraficarProceso;
 import Classes.Simulator;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -115,6 +116,7 @@ public class MainView extends javax.swing.JFrame {
         startButton = new javax.swing.JButton();
         settingsButton = new javax.swing.JToggleButton();
         SimulationButton = new javax.swing.JToggleButton();
+        jButton1 = new javax.swing.JButton();
         bodyPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -230,6 +232,14 @@ public class MainView extends javax.swing.JFrame {
         });
         leftPanel.add(SimulationButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 100, 50));
 
+        jButton1.setText("Ver Grafico");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        leftPanel.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 210, -1, 20));
+
         jPanel1.add(leftPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, -1, 510));
 
         javax.swing.GroupLayout bodyPanelLayout = new javax.swing.GroupLayout(bodyPanel);
@@ -337,6 +347,11 @@ public class MainView extends javax.swing.JFrame {
         startButton.setEnabled(true);
     }//GEN-LAST:event_pauseButtonActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        GraficarProceso.RecibirCPUArray(simulator.getCPUarray() );
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -380,6 +395,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JLabel closeLabel;
     private javax.swing.JToggleButton createProcessButton;
     private javax.swing.JButton finishButton;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JPanel minimizeButton;

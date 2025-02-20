@@ -23,7 +23,7 @@ public class Process extends MemoryEntity{
     private int timeInQueue = 0; //para HRRN
     private int numInstructions;
     private int ExecutionTime = 0;
-    private Clock clock = new Clock(1);
+//    private Clock clock = new Clock(1);
     //Constantes
     public static final int RUNNING = 0;
     public static final int BLOCKED = 1;

@@ -5,6 +5,7 @@
 package Classes;
 
 import DataStructures.List;
+import DataStructures.Queue;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,10 @@ public class CPU extends Thread implements ClockListener{
     private Integer currentPlanningPolicy;    
     private int ticksPerInstruction;
     private int ticksCounter = 0;
+    private boolean isTimeTrackingRunning = false; //Para el metodo que no imprima varias veces.
+    private Queue<Integer> ExecTimes =new Queue();
+    
+
     
     //Constantes
     public final static int RUN_OS = 0;
@@ -152,6 +157,14 @@ public class CPU extends Thread implements ClockListener{
     public void setCpuStatus(int cpuStatus) {
         this.cpuStatus = cpuStatus;
     }
+    
+    public Queue<Integer> getExecTimes() {
+        return ExecTimes;
+    }
+    
+    public void SetExecTimes(Queue<Integer>  ExecTimes) {
+        this.ExecTimes = ExecTimes;
+    }
 
     
     
@@ -222,6 +235,7 @@ public class CPU extends Thread implements ClockListener{
      * Ejecuta un proceso cargado en memoria principal en el procesador
      */
     public void runProcess(){  
+        trackProcessTime();
         //Si el proceso no ha terminado y no ha sido interrumpido -> seguir ejecutando
         boolean processEnded = this.MAR < this.currentProcess.getNumInstructions();
         boolean processRunningStatus = this.currentProcess.getStatus() == Process.RUNNING;        
@@ -344,7 +358,34 @@ public class CPU extends Thread implements ClockListener{
     }
     
     
-    
+    public void trackProcessTime() {
+    if (!isTimeTrackingRunning) {
+        isTimeTrackingRunning = true;
+        Thread timeTrackerThread = new Thread(() -> {
+            int time = 0;
+            boolean processRunning = true;
+
+            while (processRunning) {
+                time += 1;
+                if (this.currentProcess == null || this.currentProcess.getStatus() == Process.TERMINATED) {
+                    processRunning = false;
+                    break;
+                }
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            System.out.println("TIEMPO EJECUCION: " + time + " s");
+            ExecTimes.enqueue(time);
+            isTimeTrackingRunning = false; // Resetea el flag cuando termina el thread
+        });
+        timeTrackerThread.start();
+    }
+}
     
     
     
