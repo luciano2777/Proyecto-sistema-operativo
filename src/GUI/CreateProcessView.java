@@ -35,6 +35,7 @@ public class CreateProcessView extends javax.swing.JPanel {
         buttonGroup.add(IOBoundRButton);
         cpuBoundRButton.setSelected(true);
         createdMessage.setText("");
+        errorMessage.setText("");
     }
     
     public void saveProcess(String name, Integer numInstructions, boolean isIObound,
@@ -103,7 +104,10 @@ public class CreateProcessView extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
         ticksToSatisfyIOminus = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         createdMessage = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        errorMessage = new javax.swing.JLabel();
 
         jPanel1.setBackground(new java.awt.Color(239, 239, 239));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -258,10 +262,23 @@ public class CreateProcessView extends javax.swing.JPanel {
 
         jPanel1.add(ticksToSatisfyIOminus, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 290, 20, 20));
 
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
         createdMessage.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         createdMessage.setForeground(new java.awt.Color(0, 204, 51));
         createdMessage.setText("Proceso creado exitosamente!");
-        jPanel1.add(createdMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 380, -1, -1));
+        jPanel2.add(createdMessage, new java.awt.GridBagConstraints());
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 370, 430, 40));
+
+        jPanel3.setLayout(new java.awt.GridBagLayout());
+
+        errorMessage.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        errorMessage.setForeground(new java.awt.Color(255, 0, 0));
+        errorMessage.setText("ErrorMessage");
+        jPanel3.add(errorMessage, new java.awt.GridBagConstraints());
+
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 420, 430, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -304,50 +321,73 @@ public class CreateProcessView extends javax.swing.JPanel {
     }//GEN-LAST:event_nameInputFocusLost
 
     private void numInstructionsInputFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_numInstructionsInputFocusGained
-        if(numInstructionsInput.getText().equals("Cantidad de instrucciones")){
-            numInstructionsInput.setText("");
-            numInstructionsInput.setForeground(Color.black);            
+        if(IOBoundRButton.isSelected()){
+            if(numInstructionsInput.getText().equals("Cantidad de instrucciones")){
+                numInstructionsInput.setText("");
+                numInstructionsInput.setForeground(Color.black);            
+            }            
         }
     }//GEN-LAST:event_numInstructionsInputFocusGained
 
     private void numInstructionsInputFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_numInstructionsInputFocusLost
-        if(numInstructionsInput.getText().isBlank()){            
-            numInstructionsInput.setText("Cantidad de instrucciones");
-            numInstructionsInput.setForeground(new Color(102, 102, 102));
+        if(IOBoundRButton.isSelected()){
+            if(numInstructionsInput.getText().isBlank()){            
+                numInstructionsInput.setText("Cantidad de instrucciones");
+                numInstructionsInput.setForeground(new Color(102, 102, 102));
+            }            
         }
     }//GEN-LAST:event_numInstructionsInputFocusLost
 
     private void ticksToRequestIOplusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOplusMouseClicked
-        if((ticksToExceptionLabel.getText().length() + 1) < 4){
-            ticksToExceptionLabel.setText(Integer.toString(Integer.parseInt(ticksToExceptionLabel.getText()) + 1));
+        if(IOBoundRButton.isSelected()){
+            if((ticksToExceptionLabel.getText().length() + 1) < 4){
+                ticksToExceptionLabel.setText(Integer.toString(Integer.parseInt(ticksToExceptionLabel.getText()) + 1));
+            }            
         }
     }//GEN-LAST:event_ticksToRequestIOplusMouseClicked
 
     private void ticksToRequestIOminusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOminusMouseClicked
-        if(Integer.parseInt(ticksToExceptionLabel.getText()) > 1){
-            ticksToExceptionLabel.setText(Integer.toString(Integer.parseInt(ticksToExceptionLabel.getText()) - 1));
+        if(IOBoundRButton.isSelected()){
+            if(Integer.parseInt(ticksToExceptionLabel.getText()) > 1){
+                ticksToExceptionLabel.setText(Integer.toString(Integer.parseInt(ticksToExceptionLabel.getText()) - 1));
+            }            
         }
     }//GEN-LAST:event_ticksToRequestIOminusMouseClicked
 
     private void ticksToSatisfyIOminusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOminusMouseClicked
-        if(Integer.parseInt(ticksToSuccesLabel.getText()) > 1){
-            ticksToSuccesLabel.setText(Integer.toString(Integer.parseInt(ticksToSuccesLabel.getText()) - 1));
+        if(IOBoundRButton.isSelected()){
+            if(Integer.parseInt(ticksToSuccesLabel.getText()) > 1){
+                ticksToSuccesLabel.setText(Integer.toString(Integer.parseInt(ticksToSuccesLabel.getText()) - 1));
+            }            
         }
     }//GEN-LAST:event_ticksToSatisfyIOminusMouseClicked
 
     private void ticksToSatisfyIOplusMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOplusMouseClicked
-        if((ticksToSuccesLabel.getText().length() + 1) < 4){
-            ticksToSuccesLabel.setText(Integer.toString(Integer.parseInt(ticksToSuccesLabel.getText()) + 1));
+        if(IOBoundRButton.isSelected()){
+            if((ticksToSuccesLabel.getText().length() + 1) < 4){
+                ticksToSuccesLabel.setText(Integer.toString(Integer.parseInt(ticksToSuccesLabel.getText()) + 1));
+            }            
         }
     }//GEN-LAST:event_ticksToSatisfyIOplusMouseClicked
 
     private void CreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateButtonActionPerformed
+        if(nameInput.getText().equals("Nombre") || numInstructionsInput.getText().equals("Cantidad de instrucciones")){
+            errorMessage.setText("Error: complete todo el formulario");
+                        
+            Timer timer = new Timer(3000, (ActionEvent e) -> {
+                errorMessage.setText("");
+            });            
+            timer.setRepeats(false);
+            timer.start();
+            return;
+        }
         String name = nameInput.getText();
         Integer numInstructions = Integer.valueOf(numInstructionsInput.getText());
         boolean isIObound = IOBoundRButton.isSelected();
         Integer ticksToException = Integer.valueOf(ticksToExceptionLabel.getText());
         Integer ticksToSuccess = Integer.valueOf(ticksToSuccesLabel.getText());
         Integer memoryAdress = null; 
+        
         
         MemoryEntity[] mainMemory = this.simulator.getMainMemory();
         for (int i = 1; i < mainMemory.length; i++) {            
@@ -368,10 +408,18 @@ public class CreateProcessView extends javax.swing.JPanel {
         saveProcess(name, numInstructions, isIObound, ticksToException, ticksToSuccess, memoryAdress);
         this.simView.drawReadyQueue();
         
+        createdMessage.setText("Proceso creado exitosamente!");
+        Timer timer = new Timer(3000, (ActionEvent e) -> {
+            createdMessage.setText("");
+        });            
+        timer.setRepeats(false);
+        timer.start();
     }//GEN-LAST:event_CreateButtonActionPerformed
 
     private void ticksToRequestIOplusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOplusMouseEntered
-        ticksToRequestIOplus.setBackground(new Color(204, 204, 204));       
+        if(IOBoundRButton.isSelected()){
+            ticksToRequestIOplus.setBackground(new Color(204, 204, 204));                   
+        }
     }//GEN-LAST:event_ticksToRequestIOplusMouseEntered
 
     private void ticksToRequestIOplusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOplusMouseExited
@@ -379,7 +427,9 @@ public class CreateProcessView extends javax.swing.JPanel {
     }//GEN-LAST:event_ticksToRequestIOplusMouseExited
 
     private void ticksToRequestIOminusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOminusMouseEntered
-        ticksToRequestIOminus.setBackground(new Color(204, 204, 204));       
+        if(IOBoundRButton.isSelected()){
+            ticksToRequestIOminus.setBackground(new Color(204, 204, 204));                   
+        }
     }//GEN-LAST:event_ticksToRequestIOminusMouseEntered
 
     private void ticksToRequestIOminusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToRequestIOminusMouseExited
@@ -387,7 +437,9 @@ public class CreateProcessView extends javax.swing.JPanel {
     }//GEN-LAST:event_ticksToRequestIOminusMouseExited
 
     private void ticksToSatisfyIOplusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOplusMouseEntered
-        ticksToSatisfyIOplus.setBackground(new Color(204, 204, 204));    
+        if(IOBoundRButton.isSelected()){
+            ticksToSatisfyIOplus.setBackground(new Color(204, 204, 204));                
+        }
     }//GEN-LAST:event_ticksToSatisfyIOplusMouseEntered
 
     private void ticksToSatisfyIOplusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOplusMouseExited
@@ -395,7 +447,9 @@ public class CreateProcessView extends javax.swing.JPanel {
     }//GEN-LAST:event_ticksToSatisfyIOplusMouseExited
 
     private void ticksToSatisfyIOminusMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOminusMouseEntered
-        ticksToSatisfyIOminus.setBackground(new Color(204, 204, 204));  
+        if(IOBoundRButton.isSelected()){
+            ticksToSatisfyIOminus.setBackground(new Color(204, 204, 204));              
+        }
     }//GEN-LAST:event_ticksToSatisfyIOminusMouseEntered
 
     private void ticksToSatisfyIOminusMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ticksToSatisfyIOminusMouseExited
@@ -412,11 +466,14 @@ public class CreateProcessView extends javax.swing.JPanel {
     private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JRadioButton cpuBoundRButton;
     private javax.swing.JLabel createdMessage;
+    private javax.swing.JLabel errorMessage;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JTextField nameInput;
     private javax.swing.JTextField numInstructionsInput;
     private javax.swing.JLabel ticksToExceptionLabel;

@@ -40,6 +40,7 @@ public class SettingsView extends javax.swing.JPanel {
         this.simulator = simulator;
         this.simView = simView;
         saveMessage.setText("");
+        errorMessage.setText("");
         numCpusLabel.setText(numCpus);
         intervalInput.setText(interval);
         ticksPerInstructionLabel.setText(ticksPerInstruction);
@@ -71,7 +72,10 @@ public class SettingsView extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         ticksPerInstructionMinus = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
+        savePanel = new javax.swing.JPanel();
         saveMessage = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        errorMessage = new javax.swing.JLabel();
 
         jPanel1.setBackground(new java.awt.Color(239, 239, 239));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -196,10 +200,23 @@ public class SettingsView extends javax.swing.JPanel {
 
         jPanel1.add(ticksPerInstructionMinus, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 250, 20, 20));
 
+        savePanel.setLayout(new java.awt.GridBagLayout());
+
         saveMessage.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         saveMessage.setForeground(new java.awt.Color(0, 204, 51));
         saveMessage.setText("Cambios guardados exitosamente!");
-        jPanel1.add(saveMessage, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 390, -1, -1));
+        savePanel.add(saveMessage, new java.awt.GridBagConstraints());
+
+        jPanel1.add(savePanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 370, 460, 50));
+
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
+        errorMessage.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        errorMessage.setForeground(new java.awt.Color(255, 0, 0));
+        errorMessage.setText("ErrorMessage");
+        jPanel2.add(errorMessage, new java.awt.GridBagConstraints());
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 430, 460, 50));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -214,14 +231,26 @@ public class SettingsView extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        String tickDuration = intervalInput.getText();            
+        String tickPerInstruction = ticksPerInstructionLabel.getText();
+        String numCpusEnabled = numCpusLabel.getText();
+        
+        if(tickDuration.isBlank()){
+            errorMessage.setText("Error: complete todo el formulario");
+            Timer timer = new Timer(3000, (ActionEvent e) -> {
+                errorMessage.setText("");
+            });
+            
+            timer.setRepeats(false);
+            timer.start();
+            return;
+        }
+        
         FileWriter fw = null;
         try {
             fw = new FileWriter(filePath);
             BufferedWriter bw = new BufferedWriter(fw);
                         
-            String tickDuration = intervalInput.getText();            
-            String tickPerInstruction = ticksPerInstructionLabel.getText();
-            String numCpusEnabled = numCpusLabel.getText();
             
             this.simulator.setSettings(Integer.parseInt(numCpusEnabled),
                     Integer.parseInt(tickDuration), Integer.parseInt(tickPerInstruction));
@@ -305,6 +334,7 @@ public class SettingsView extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel errorMessage;
     private javax.swing.JTextField intervalInput;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -314,11 +344,13 @@ public class SettingsView extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel numCPUminus;
     private javax.swing.JPanel numCPUplus;
     private javax.swing.JLabel numCpusLabel;
     private javax.swing.JButton saveButton;
     private javax.swing.JLabel saveMessage;
+    private javax.swing.JPanel savePanel;
     private javax.swing.JLabel settingsLabel;
     private javax.swing.JLabel ticksPerInstructionLabel;
     private javax.swing.JPanel ticksPerInstructionMinus;

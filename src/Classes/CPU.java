@@ -23,8 +23,7 @@ public class CPU extends Thread implements ClockListener{
     private MemoryEntity[] mainMemory;
     private Clock clock;
     private Semaphore semaphore;   
-    private Process currentProcess;
-    private Integer currentPlanningPolicy;    
+    private Process currentProcess;    
     private int ticksPerInstruction;
     private int ticksCounter = 0;
     private boolean isTimeTrackingRunning = false; //Para el metodo que no imprima varias veces.
@@ -53,8 +52,7 @@ public class CPU extends Thread implements ClockListener{
         this.mainMemory = mainMemory;
         this.clock = clock;
         this.semaphore = new Semaphore(1);
-        this.currentProcess = null;
-        this.currentPlanningPolicy = null;        
+        this.currentProcess = null;              
         this.ticksPerInstruction = ticksPerInstruction;
     }
     
@@ -77,7 +75,6 @@ public class CPU extends Thread implements ClockListener{
         this.clock = clock;
         this.semaphore = new Semaphore(1);
         this.currentProcess = null;  
-        this.currentPlanningPolicy = null;
         this.ticksPerInstruction = ticksPerInstruction;
     }
     
@@ -207,10 +204,9 @@ public class CPU extends Thread implements ClockListener{
             this.semaphore.acquire();                        
             
             //Carga SO
-            OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
-            this.currentPlanningPolicy = OS.getPlanningPolicy();
+            OperatingSystem OS = (OperatingSystem) this.mainMemory[0];            
             
-            //Elige el siguiente proceso segun la planificacion
+            //Elige el siguiente proceso segun la planificacion            
             this.currentProcess = OS.assignNextProcess(this.ID);            
             if(this.currentProcess == null){
                 this.cpuStatus = RUN_IDLE_PROCESS;                
@@ -238,21 +234,33 @@ public class CPU extends Thread implements ClockListener{
         trackProcessTime();
         //Si el proceso no ha terminado y no ha sido interrumpido -> seguir ejecutando
         boolean processEnded = this.MAR < this.currentProcess.getNumInstructions();
-        boolean processRunningStatus = this.currentProcess.getStatus() == Process.RUNNING;        
+        boolean processRunningStatus = this.currentProcess.getStatus() == Process.RUNNING;  
+        OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
         
         if(processEnded && processRunningStatus){             
             
             //Si la planificacion es RR verificar el quantum de tiempo
-            if(this.currentPlanningPolicy == OperatingSystem.roundRobin){                
+            if(OS.getPlanningPolicy() == OperatingSystem.roundRobin){                
                 if(this.currentProcess.getRemainingTime() == 0){
                     this.currentProcess.setRemainingTime(5);
-                    OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
                     OS.enqueueInReadyQueue(this.currentProcess.getMemoryAdress());
                     this.currentProcess = null;
                     this.cpuStatus = RUN_OS;
                     return;
                 }
                 this.currentProcess.decreaseRemainingTime();
+            }
+            
+            //Si la planificacion es SRT verificar si hay un proceso de mayor prioridad            
+            if(OS.getPlanningPolicy() == OperatingSystem.SRT){
+                Integer memoryAdress = OS.getScheduler().checkSRT(this.ID);
+                
+                if(memoryAdress != null){
+                    OS.enqueueInReadyQueue(memoryAdress);
+                    this.currentProcess = null;
+                    this.cpuStatus = RUN_OS;
+                    return;
+                }                
             }
             
             //Si el procesos es I/O bound
@@ -283,8 +291,7 @@ public class CPU extends Thread implements ClockListener{
                 try {
                     this.semaphore.acquire();
                                         
-                    this.currentProcess.setStatus(Process.TERMINATED);
-                    OperatingSystem OS = (OperatingSystem) this.mainMemory[0];
+                    this.currentProcess.setStatus(Process.TERMINATED);                    
                     OS.getScheduler().getCompletedProcessList().append(this.currentProcess);
                     
                     List<Process> processList = OS.getScheduler().getProcessList();                    

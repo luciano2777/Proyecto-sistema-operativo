@@ -145,6 +145,27 @@ public class Scheduler implements ClockListener{
         process.increaseTimeInQueue();
         this.readyQueue.enqueue(process.getMemoryAdress());
     }
+    
+    
+    public Integer checkSRT(int numCPU){
+        
+        Process currentProcess = this.CPUarray[numCPU].getCurrentProcess();
+        int currentTime = currentProcess.getNumInstructions() - currentProcess.getMAR();
+        
+        for (int i = 0; i < this.readyQueue.getSize(); i++) {
+            Integer memoryAdress = this.readyQueue.dequeue();
+            Process auxProcess = (Process) mainMemory[memoryAdress];
+            int auxTime = auxProcess.getNumInstructions() - auxProcess.getMAR();
+            
+            if(auxTime < currentTime){
+                return memoryAdress;
+            } 
+            this.readyQueue.enqueue(memoryAdress);
+        }
+        
+        return null;
+    }
+    
 
     @Override
     public void onTick(int tick) {
